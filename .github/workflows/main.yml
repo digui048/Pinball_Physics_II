@@ -16,3 +16,17 @@ jobs:
 
     - name: Build solution
       run: msbuild .\PhysicsGame.sln /p:Configuration=Release
+
+    - name: Create artifact directoy
+      run: |
+        mkdir ./artifact
+        mkdir ./PhysicsGame
+
+    - name: Copy files
+      run: copy ./Build/PhysicsGame/Release/win32/PhysicsGame.exe ./artifact/Pinball_Physics_II-main
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Windows-Binary
+        path: ./artifact
