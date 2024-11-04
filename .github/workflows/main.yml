@@ -47,7 +47,7 @@ jobs:
       - name: Download a Build artefact
         uses: actions/download-artifact@v4
         with:
-          name: my-artifact
+          name: Windows-Binary
           path: ./artifact/
       - name: Display structure of downloaded files
         run: ls -R ./artifact/
