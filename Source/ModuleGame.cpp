@@ -142,47 +142,28 @@ public:
 private:
 	Texture2D texture;
 };
-class Flipper : public PhysicEntity
+class LeftFlipper : public PhysicEntity
 {
 public:
 	// Pivot 0, 0
-	static constexpr int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
+	static constexpr int rick_head[24] = {
+			0,10,
+			4,4,
+			10,0,
+			16, 0,
+			70, 26,
+			78, 32,
+			78, 36,
+			72, 40,
+			66, 40,
+			10, 26,
+			2, 20,
+			0, 16,
+			
 	};
 
-	Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 64), _listener)
+	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 24), _listener)
 		, texture(_texture)
 	{
 
@@ -192,7 +173,7 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
@@ -290,6 +271,7 @@ bool ModuleGame::Start()
 
 	//Draw Obj Map
 	entities.emplace_back(new Map(App->physics, 0, 0, this, map));
+	entities.emplace_back(new LeftFlipper(App->physics, SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT/6, this, leftFlipper));
 	
 	return ret;
 }
