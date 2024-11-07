@@ -86,7 +86,118 @@ private:
 	Texture2D texture;
 
 };
+class Map : public PhysicEntity
+{
+public:
+	// Pivot 0, 0
+	static constexpr int rick_head[64] = {
+			14, 3,
+			42, 40,
+			40, 0,
+			75, 30,
+			88, 4,
+			94, 39,
+			111, 36,
+			104, 58,
+			107, 62,
+			117, 67,
+			109, 73,
+			110, 85,
+			106, 91,
+			109, 99,
+			103, 104,
+			100, 115,
+			106, 121,
+			103, 125,
+			98, 126,
+			95, 137,
+			83, 147,
+			67, 147,
+			53, 140,
+			46, 132,
+			34, 136,
+			38, 126,
+			23, 123,
+			30, 114,
+			10, 102,
+			29, 90,
+			0, 75,
+			30, 62
+	};
 
+	Map(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 64), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+};
+class Flipper : public PhysicEntity
+{
+public:
+	// Pivot 0, 0
+	static constexpr int rick_head[64] = {
+			14, 36,
+			42, 40,
+			40, 0,
+			75, 30,
+			88, 4,
+			94, 39,
+			111, 36,
+			104, 58,
+			107, 62,
+			117, 67,
+			109, 73,
+			110, 85,
+			106, 91,
+			109, 99,
+			103, 104,
+			100, 115,
+			106, 121,
+			103, 125,
+			98, 126,
+			95, 137,
+			83, 147,
+			67, 147,
+			53, 140,
+			46, 132,
+			34, 136,
+			38, 126,
+			23, 123,
+			30, 114,
+			10, 102,
+			29, 90,
+			0, 75,
+			30, 62
+	};
+
+	Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 64), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+};
 class Rick : public PhysicEntity
 {
 public:
@@ -166,11 +277,20 @@ bool ModuleGame::Start()
 	circle = LoadTexture("Assets/wheel.png"); 
 	box = LoadTexture("Assets/crate.png");
 	rick = LoadTexture("Assets/rick_head.png");
+
+	//Load Game Textures
+	map = LoadTexture("Assets/exportedSprites/Base.png");
+	leftFlipper = LoadTexture("Assets/exportedSprites/FlipperLeft.png");
+	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
 	
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
+	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH /2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
+
+	//Draw Obj Map
+	entities.emplace_back(new Map(App->physics, 0, 0, this, map));
+	
 	return ret;
 }
 
@@ -185,6 +305,7 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+	
 	if(IsKeyPressed(KEY_SPACE))
 	{
 		ray_on = !ray_on;

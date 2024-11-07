@@ -27,12 +27,15 @@ public:
 
 	std::vector<PhysicEntity*> entities;
 	
+	//Physic bodies
 	PhysBody* sensor;
 	bool sensed;
 
+	//Textures
 	Texture2D circle;
 	Texture2D box;
 	Texture2D rick;
+	Texture2D map, rightFlipper, leftFlipper;
 
 	uint32 bonus_fx;
 

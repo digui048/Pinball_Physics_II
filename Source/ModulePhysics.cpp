@@ -31,7 +31,7 @@ bool ModulePhysics::Start()
 	ground = world->CreateBody(&bd);
 
 	// big static circle as "ground" in the middle of the screen
-	int x = (int)(SCREEN_WIDTH / 2);
+	/*int x = (int)(SCREEN_WIDTH / 2);
 	int y = (int)(SCREEN_HEIGHT / 1.5f);
 	int diameter = SCREEN_WIDTH / 2;
 
@@ -46,7 +46,7 @@ bool ModulePhysics::Start()
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
-	big_ball->CreateFixture(&fixture);
+	big_ball->CreateFixture(&fixture);*/
 
 	return true;
 }
