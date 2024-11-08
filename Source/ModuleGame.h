@@ -37,6 +37,9 @@ public:
 	Texture2D rick;
 	Texture2D map, rightFlipper, leftFlipper;
 
+	//b2bodies
+	b2Body* bLeftFlipper, bMap;
+
 	uint32 bonus_fx;
 
 	vec2<int> ray;
