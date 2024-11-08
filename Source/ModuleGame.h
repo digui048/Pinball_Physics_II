@@ -38,7 +38,9 @@ public:
 	Texture2D map, rightFlipper, leftFlipper;
 
 	//b2bodies
-	b2Body* bLeftFlipper, bMap;
+	/*b2Body* bLeftFlipper, bMap;*/
+
+	//Joint
 
 	uint32 bonus_fx;
 

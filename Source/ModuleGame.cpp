@@ -252,10 +252,11 @@ bool ModuleGame::Start()
 	entities.emplace_back(new Map(App->physics, 0, 0, this, map));
 	entities.emplace_back(new LeftFlipper(App->physics, SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT/6, this, leftFlipper));
 
-	PhysBody* pMap = entities[0]->GetBody();
-	PhysBody* pLeftFlipper = entities[1]->GetBody();
-	bMap = pMap->body;
-	bLeftFlipper = pLeftFlipper->body;
+	//PhysBody* pMap = entities[0]->GetBody();
+	//PhysBody* pLeftFlipper = entities[1]->GetBody();
+	//bMap = pMap->body;
+	//bLeftFlipper = pLeftFlipper->body;
+
 
 	return ret;
 }
