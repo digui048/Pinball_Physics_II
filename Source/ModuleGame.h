@@ -2,15 +2,16 @@
 
 #include "Globals.h"
 #include "Module.h"
-
 #include "p2Point.h"
 
 #include "raylib.h"
 #include <vector>
 
+
 class PhysBody;
 class PhysicEntity;
-
+class Map;
+class LeftFlipper;
 
 class ModuleGame : public Module
 {
@@ -37,10 +38,9 @@ public:
 	Texture2D rick;
 	Texture2D map, rightFlipper, leftFlipper;
 
-	//b2bodies
-	/*b2Body* bLeftFlipper, bMap;*/
-
-	//Joint
+	//Custom classes objects 
+	Map* physicMap;
+	LeftFlipper* physicLeftFlipper;
 
 	uint32 bonus_fx;
 
