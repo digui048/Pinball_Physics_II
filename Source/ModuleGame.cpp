@@ -217,7 +217,7 @@ public:
 
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 30), _listener), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x + 50, _y, 100, 30), _listener), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 		
@@ -227,17 +227,15 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 		if (IsKeyDown(KEY_LEFT)) 
 		{
-			lFlipperJoint->SetMotorSpeed(50.0f);
+			lFlipperJoint->SetMotorSpeed(5.0f);
 		}
 		else 
 		{
-			lFlipperJoint->SetMotorSpeed(0);
+			lFlipperJoint->SetMotorSpeed(-5.0f);
 		}
-		float angle = GetBody()->body->GetAngle();
-		printf("Flipper angle: %f \n", angle);
 	}
 
 private:
@@ -249,8 +247,8 @@ private:
 	{
 		b2Body* lFlipperBody = GetBody()->body;
 		lFlipperJointDef.Initialize(lFlipperBody, mapBody, lFlipperBody->GetWorldCenter());
-		lFlipperJointDef.lowerAngle = -0.5f * b2_pi;
-		lFlipperJointDef.upperAngle = 0.25f * b2_pi;
+		lFlipperJointDef.lowerAngle = 0 * b2_pi;
+		lFlipperJointDef.upperAngle = 0.15f * b2_pi;
 		lFlipperJointDef.enableLimit = true;
 		lFlipperJointDef.maxMotorTorque = 50.0f;
 		lFlipperJointDef.motorSpeed = 0.0f;
