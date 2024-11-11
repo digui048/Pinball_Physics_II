@@ -122,7 +122,7 @@ class LeftFlipper : public PhysicEntity
 {
 public:
 	// Pivot 0, 0
-	static constexpr int rick_head[24] = {
+	static constexpr int points[24] = {
 			0,10,
 			4,4,
 			10,0,
@@ -139,11 +139,14 @@ public:
 	};
 
 	PhysBody* GetBody() const { return body; }
+	b2RevoluteJointDef GetJoint() const { return lFlipperJoint; }
+	
 
-	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 24), _listener)
-		, texture(_texture)
+
+	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, points, 24), _listener), texture(_texture)
 	{
+		InitializeJoint(map->GetBody()->body);
 		
 	}
 
@@ -157,62 +160,18 @@ public:
 
 private:
 	Texture2D texture;
-};
-class Rick : public PhysicEntity
-{
-public:
-	// Pivot 0, 0
-	static constexpr int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-	};
-
-	Rick(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(GetMouseX() - 50, GetMouseY() - 100, rick_head, 64), _listener)
-		, texture(_texture)
+	b2RevoluteJointDef lFlipperJoint;
+	void InitializeJoint(b2Body* mapBody)
 	{
-
+		b2Body* lFlipperBody = GetBody()->body;
+		lFlipperJoint.Initialize(lFlipperBody, mapBody, lFlipperBody->GetWorldCenter());
+		lFlipperJoint.lowerAngle = -0.5f * b2_pi;
+		lFlipperJoint.upperAngle = 0.25f * b2_pi;
+		lFlipperJoint.enableLimit = true;
+		lFlipperJoint.maxMotorTorque = 10.0f;
+		lFlipperJoint.motorSpeed = 0.0f;
+		lFlipperJoint.enableMotor = true;
 	}
-
-	void Update() override
-	{
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
-	}
-
-private:
-	Texture2D texture;
 };
 
 
@@ -249,15 +208,11 @@ bool ModuleGame::Start()
 
 
 	//Draw Obj Map
-	entities.emplace_back(new Map(App->physics, 0, 0, this, map));
-	entities.emplace_back(new LeftFlipper(App->physics, SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT/6, this, leftFlipper));
-
-	//PhysBody* pMap = entities[0]->GetBody();
-	//PhysBody* pLeftFlipper = entities[1]->GetBody();
-	//bMap = pMap->body;
-	//bLeftFlipper = pLeftFlipper->body;
-
-
+	physicMap = new Map(App->physics, 0, 0, this, map);
+	entities.emplace_back(physicMap);
+	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, 
+	leftFlipper, physicMap);
+	entities.emplace_back(physicLeftFlipper);
 	return ret;
 }
 
@@ -291,10 +246,6 @@ update_status ModuleGame::Update()
 		entities.emplace_back(new Box(App->physics, GetMouseX(), GetMouseY(), this, box));
 	}
 
-	if(IsKeyPressed(KEY_THREE))
-	{
-		entities.emplace_back(new Rick(App->physics, GetMouseX(), GetMouseY(), this, rick));
-	}
 
 	// Prepare for raycast ------------------------------------------------------
 	
