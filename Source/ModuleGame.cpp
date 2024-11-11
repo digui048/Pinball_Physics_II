@@ -95,8 +95,8 @@ public:
 			96, 386,
 			96, 640,
 			108, 648,
-			96, 664,
-			308, 664,
+			96, 764,
+			308, 764,
 			386, 400,
 
 	};
@@ -139,12 +139,12 @@ public:
 	};
 
 	PhysBody* GetBody() const { return body; }
-	b2RevoluteJointDef GetJoint() const { return lFlipperJoint; }
+	b2RevoluteJointDef GetJoint() const { return lFlipperJointDef; }
 	
 
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, points, 24), _listener), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 30), _listener), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 		
@@ -155,22 +155,35 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
-
+		if (IsKeyDown(KEY_LEFT)) 
+		{
+			lFlipperJoint->SetMotorSpeed(50.0f);
+		}
+		else 
+		{
+			lFlipperJoint->SetMotorSpeed(0);
+		}
+		float angle = GetBody()->body->GetAngle();
+		printf("Flipper angle: %f \n", angle);
 	}
 
 private:
 	Texture2D texture;
-	b2RevoluteJointDef lFlipperJoint;
+	b2RevoluteJointDef lFlipperJointDef;
+	b2RevoluteJoint* lFlipperJoint;
+	b2World* myWorld = GetBody()->body->GetWorld();;
 	void InitializeJoint(b2Body* mapBody)
 	{
 		b2Body* lFlipperBody = GetBody()->body;
-		lFlipperJoint.Initialize(lFlipperBody, mapBody, lFlipperBody->GetWorldCenter());
-		lFlipperJoint.lowerAngle = -0.5f * b2_pi;
-		lFlipperJoint.upperAngle = 0.25f * b2_pi;
-		lFlipperJoint.enableLimit = true;
-		lFlipperJoint.maxMotorTorque = 10.0f;
-		lFlipperJoint.motorSpeed = 0.0f;
-		lFlipperJoint.enableMotor = true;
+		lFlipperJointDef.Initialize(lFlipperBody, mapBody, lFlipperBody->GetWorldCenter());
+		lFlipperJointDef.lowerAngle = -0.5f * b2_pi;
+		lFlipperJointDef.upperAngle = 0.25f * b2_pi;
+		lFlipperJointDef.enableLimit = true;
+		lFlipperJointDef.maxMotorTorque = 50.0f;
+		lFlipperJointDef.motorSpeed = 0.0f;
+		lFlipperJointDef.enableMotor = true;
+
+		lFlipperJoint = (b2RevoluteJoint*)myWorld->CreateJoint(&lFlipperJointDef);
 	}
 };
 
