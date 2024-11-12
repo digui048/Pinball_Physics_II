@@ -4,7 +4,7 @@
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
-
+#include <iostream>
 class PhysicEntity
 {
 protected:
@@ -223,19 +223,13 @@ public:
 		
 	}
 
+
 	void Update() override
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
-		if (IsKeyDown(KEY_LEFT)) 
-		{
-			lFlipperJoint->SetMotorSpeed(5.0f);
-		}
-		else 
-		{
-			lFlipperJoint->SetMotorSpeed(-5.0f);
-		}
+		Push();
 	}
 
 private:
@@ -246,7 +240,13 @@ private:
 	void InitializeJoint(b2Body* mapBody)
 	{
 		b2Body* lFlipperBody = GetBody()->body;
-		lFlipperJointDef.Initialize(lFlipperBody, mapBody, lFlipperBody->GetWorldCenter());
+		lFlipperBody->SetAngularVelocity(0.0f);
+		b2Vec2 localAnchor;
+		localAnchor.Set(0,0);
+		b2Vec2 worldAnchor = lFlipperBody->GetWorldPoint(localAnchor);
+		lFlipperJointDef.Initialize(lFlipperBody, mapBody, worldAnchor);
+
+
 		lFlipperJointDef.lowerAngle = 0 * b2_pi;
 		lFlipperJointDef.upperAngle = 0.15f * b2_pi;
 		lFlipperJointDef.enableLimit = true;
@@ -255,7 +255,33 @@ private:
 		lFlipperJointDef.enableMotor = true;
 
 		lFlipperJoint = (b2RevoluteJoint*)myWorld->CreateJoint(&lFlipperJointDef);
+
+		std::cout << "x anchor: " << lFlipperJoint->GetLocalAnchorA().x << std::endl;
+		std::cout << "y anchor: " << lFlipperJoint->GetLocalAnchorA().y << std::endl;
 	}
+
+	void Push() 
+	{
+		dt = GetFrameTime() * GetFPS();
+
+		if (timer > 0)
+		{
+			timer -= dt;
+			lFlipperJoint->SetMotorSpeed(10.0f);
+		}
+		else
+		{
+			lFlipperJoint->SetMotorSpeed(-5.0f);
+		}
+		if (IsKeyPressed(KEY_LEFT))
+		{
+			timer = timerLenght;
+		}
+	}
+
+	float timer = 0;
+	float timerLenght = 10;
+	float dt;
 };
 
 
