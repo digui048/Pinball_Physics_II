@@ -288,7 +288,7 @@ class Kicker : public PhysicEntity
 {
 public:
 	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 14, 7), _listener)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 28, 14), _listener)
 		, texture(_texture)
 	{
 
@@ -296,12 +296,12 @@ public:
 
 	void Update() override
 	{
+		b2body = body->body;
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		//DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-		//	Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
-		//	Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
 		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		Push();
+		printf("timer: %f \n", timer);
 	}
 
 	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
@@ -311,7 +311,33 @@ public:
 
 private:
 	Texture2D texture;
+	b2Body* b2body;
+	void Push()
+	{
+		dt = GetFrameTime() * GetFPS();
 
+		if (timer > 0)
+		{
+			timer -= dt;
+			b2Vec2 velocity;
+			velocity.Set(0, -20);
+			b2body->SetLinearVelocity(velocity);
+
+		}
+		else
+		{
+			b2Vec2 velocity;
+			velocity.Set(0, 10);
+			b2body->SetLinearVelocity(velocity);
+		}
+		if (IsKeyPressed(KEY_DOWN))
+		{
+			timer = timerLenght;
+		}
+	}
+	float timer = 0;
+	float timerLenght = 10;
+	float dt;
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -355,6 +381,10 @@ bool ModuleGame::Start()
 	//Draw and Create OBJ LeftFlipper
 	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap);
 	entities.emplace_back(physicLeftFlipper);
+
+	//Draw and Create OBJ Kicker
+	physicKicker = new Kicker(App->physics, SCREEN_WIDTH - 48, SCREEN_HEIGHT - 40, this, kicker);
+	entities.emplace_back(physicKicker);
 
 	return ret;
 }
