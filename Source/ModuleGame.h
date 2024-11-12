@@ -12,6 +12,7 @@ class PhysBody;
 class PhysicEntity;
 class Map;
 class LeftFlipper;
+class Kicker;
 
 class ModuleGame : public Module
 {
@@ -36,11 +37,21 @@ public:
 	Texture2D circle;
 	Texture2D box;
 	Texture2D rick;
-	Texture2D map, rightFlipper, leftFlipper;
+
+	//Map texture
+	Texture2D map;
+	//Flipper textures
+	Texture2D rightFlipper, leftFlipper;
+	//Bumpers Textures
+	Texture2D Bumper1, Bumper1Mirrored, Bumper2, Bumper2Mirrored, Bumper3, Bumper4, Bumper5, Bumper5Mirrored;
+	//Ball & kicker textures
+	Texture2D ball, kicker;
+
 
 	//Custom classes objects 
 	Map* physicMap;
 	LeftFlipper* physicLeftFlipper;
+	Kicker* physicKicker;
 
 	uint32 bonus_fx;
 

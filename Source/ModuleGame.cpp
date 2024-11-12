@@ -35,7 +35,7 @@ class Circle : public PhysicEntity
 {
 public:
 	Circle(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 25), _listener)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener)
 		, texture(_texture)
 	{
 
@@ -46,10 +46,10 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
-		float scale = 1.0f;
+		float scale = 2.0f;
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
-		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f};
+		Vector2 origin = { (float)texture.width / 2.0f + 8, (float)texture.height / 2.0f + 8};
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 	}
@@ -284,7 +284,35 @@ private:
 	float dt;
 };
 
+class Kicker : public PhysicEntity
+{
+public:
+	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 14, 7), _listener)
+		, texture(_texture)
+	{
 
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		//DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
+		//	Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
+		//	Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
+	{
+		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
+	}
+
+private:
+	Texture2D texture;
+
+};
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -303,6 +331,7 @@ bool ModuleGame::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	//Load default Game textures
 	circle = LoadTexture("Assets/wheel.png"); 
 	box = LoadTexture("Assets/crate.png");
 	rick = LoadTexture("Assets/rick_head.png");
@@ -311,18 +340,22 @@ bool ModuleGame::Start()
 	map = LoadTexture("Assets/exportedSprites/Base.png");
 	leftFlipper = LoadTexture("Assets/exportedSprites/FlipperLeft.png");
 	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
+	ball = LoadTexture("Assets/exportedSprites/Ball.png");
 	
+	//Load Game Sounds
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH /2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
 
-	//Draw Obj Map
+	//Draw and Create OBJ Map
 	physicMap = new Map(App->physics, 0, 0, this, map);
 	entities.emplace_back(physicMap);
-	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, 
-	leftFlipper, physicMap);
+
+	//Draw and Create OBJ LeftFlipper
+	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap);
 	entities.emplace_back(physicLeftFlipper);
+
 	return ret;
 }
 
@@ -347,7 +380,7 @@ update_status ModuleGame::Update()
 
 	if(IsKeyPressed(KEY_ONE))
 	{
-		entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
+		entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, ball));
 		
 	}
 
