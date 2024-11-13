@@ -472,7 +472,6 @@ private:
 		}
 	}
 };
-
 class Ball : public PhysicEntity
 {
 public:
@@ -480,7 +479,7 @@ public:
 		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener)
 		, texture(_texture)
 	{
-
+		changeGravity(2);
 	}
 
 	void Update() override
@@ -499,6 +498,10 @@ public:
 
 private:
 	Texture2D texture;
+	void changeGravity(float gravity) 
+	{
+		body->body->SetGravityScale(gravity);
+	}
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -578,7 +581,7 @@ update_status ModuleGame::Update()
 
 	if(IsKeyPressed(KEY_ONE))
 	{
-		entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, ball));
+		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ball));
 		
 	}
 
