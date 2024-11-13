@@ -298,7 +298,113 @@ private:
 
 	float cooldown = 20;
 };
+class RightFlipper : public PhysicEntity
+{
+public:
+	// Pivot 0, 0
+	static constexpr int points[24] = {
+			0,10,
+			4,4,
+			10,0,
+			16, 0,
+			70, 26,
+			78, 32,
+			78, 36,
+			72, 40,
+			66, 40,
+			10, 26,
+			2, 20,
+			0, 16,
 
+	};
+
+	PhysBody* GetBody() const { return body; }
+	b2RevoluteJointDef GetJoint() const { return rFlipperJointDef; }
+
+
+
+	RightFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateRectangle(_x + 32, _y, 100, 30), _listener), texture(_texture)
+	{
+		InitializeJoint(map->GetBody()->body);
+
+
+	}
+
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		Cooldown();
+		Push();
+	}
+
+private:
+	Texture2D texture;
+	b2RevoluteJointDef rFlipperJointDef;
+	b2RevoluteJoint* rFlipperJoint;
+	b2World* myWorld = GetBody()->body->GetWorld();;
+	void InitializeJoint(b2Body* mapBody)
+	{
+		b2Body* rFlipperBody = GetBody()->body;
+		rFlipperBody->SetAngularVelocity(0.0f);
+		b2Vec2 localAnchor;
+		localAnchor.Set(0, 0);
+		b2Vec2 worldAnchor = rFlipperBody->GetWorldPoint(localAnchor);
+		rFlipperJointDef.Initialize(rFlipperBody, mapBody, worldAnchor);
+
+
+		rFlipperJointDef.lowerAngle = -0.15f * b2_pi;
+		rFlipperJointDef.upperAngle = 0 * b2_pi;
+		rFlipperJointDef.enableLimit = true;
+		rFlipperJointDef.maxMotorTorque = 50.0f;
+		rFlipperJointDef.motorSpeed = 0.0f;
+		rFlipperJointDef.enableMotor = true;
+
+		rFlipperJoint = (b2RevoluteJoint*)myWorld->CreateJoint(&rFlipperJointDef);
+
+		std::cout << "x anchor: " << rFlipperJoint->GetLocalAnchorA().x << std::endl;
+		std::cout << "y anchor: " << rFlipperJoint->GetLocalAnchorA().y << std::endl;
+	}
+
+	void Push()
+	{
+		dt = GetFrameTime() * GetFPS();
+
+		if (timer > 0)
+		{
+			timer -= dt;
+			//Yes, sure its -
+			rFlipperJoint->SetMotorSpeed(-10.0f);
+		}
+		else
+		{
+			rFlipperJoint->SetMotorSpeed(5);
+		}
+		if (IsKeyPressed(KEY_RIGHT) && cooldown <= 0)
+		{
+			timer = timerLenght;
+			cooldown = 20;
+		}
+	}
+
+	void Cooldown()
+	{
+		dt = GetFrameTime() * GetFPS();
+		if (cooldown > 0)
+		{
+			cooldown -= dt;
+		}
+	}
+
+	float timer = 0;
+	float timerLenght = 10;
+	float dt;
+
+	float cooldown = 20;
+};
 class Kicker : public PhysicEntity
 {
 public:
@@ -436,6 +542,9 @@ bool ModuleGame::Start()
 	//Draw and Create OBJ LeftFlipper
 	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap);
 	entities.emplace_back(physicLeftFlipper);
+
+	physicRightFlipper = new RightFlipper(App->physics, SCREEN_WIDTH / 2 , SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, rightFlipper, physicMap);
+	entities.emplace_back(physicRightFlipper);
 
 	//Draw and Create OBJ Kicker
 	physicKicker = new Kicker(App->physics, SCREEN_WIDTH - 48, SCREEN_HEIGHT - 40, this, kicker);

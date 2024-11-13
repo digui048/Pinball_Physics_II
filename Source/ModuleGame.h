@@ -12,6 +12,7 @@ class PhysBody;
 class PhysicEntity;
 class Map;
 class LeftFlipper;
+class RightFlipper;
 class Kicker;
 class Ball;
 
@@ -52,6 +53,7 @@ public:
 	//Custom classes objects 
 	Map* physicMap;
 	LeftFlipper* physicLeftFlipper;
+	RightFlipper* physicRightFlipper;
 	Kicker* physicKicker;
 	Ball* physicBall;
 
