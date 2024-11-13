@@ -229,6 +229,7 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		Cooldown();
 		Push();
 	}
 
@@ -273,15 +274,27 @@ private:
 		{
 			lFlipperJoint->SetMotorSpeed(-5.0f);
 		}
-		if (IsKeyPressed(KEY_LEFT))
+		if (IsKeyPressed(KEY_LEFT) && cooldown <= 0)
 		{
 			timer = timerLenght;
+			cooldown = 20;
+		}
+	}
+
+	void Cooldown() 
+	{
+		dt = GetFrameTime() * GetFPS();
+		if (cooldown > 0) 
+		{
+			cooldown -= dt;
 		}
 	}
 
 	float timer = 0;
 	float timerLenght = 10;
 	float dt;
+
+	float cooldown = 20;
 };
 
 class Kicker : public PhysicEntity
@@ -300,8 +313,8 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		Cooldown();
 		Push();
-		printf("timer: %f \n", timer);
 	}
 
 	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
@@ -330,14 +343,26 @@ private:
 			velocity.Set(0, 10);
 			b2body->SetLinearVelocity(velocity);
 		}
-		if (IsKeyPressed(KEY_DOWN))
+		if (IsKeyPressed(KEY_DOWN) && cooldown <= 0)
 		{
 			timer = timerLenght;
+			cooldown = 40;
 		}
 	}
 	float timer = 0;
 	float timerLenght = 10;
 	float dt;
+
+	float cooldown = 40;
+
+	void Cooldown()
+	{
+		dt = GetFrameTime() * GetFPS();
+		if (cooldown > 0)
+		{
+			cooldown -= dt;
+		}
+	}
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
