@@ -66,7 +66,7 @@ public:
 		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener)
 		, texture(_texture)
 	{
-
+		
 	}
 
 	void Update() override
@@ -76,6 +76,7 @@ public:
 		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
 			Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
 			Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f}, body->GetRotation() * RAD2DEG, WHITE);
+
 	}
 
 	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
@@ -220,6 +221,7 @@ public:
 		: PhysicEntity(physics->CreateRectangle(_x + 50, _y, 100, 30), _listener), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
+		
 		
 	}
 
