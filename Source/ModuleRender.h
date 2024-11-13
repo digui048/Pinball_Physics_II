@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "ModuleFont.h"
+#include "Fonts.h"
 
 #include <limits.h>
 

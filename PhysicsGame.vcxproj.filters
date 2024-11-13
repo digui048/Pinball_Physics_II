@@ -28,7 +28,7 @@
     <ClCompile Include="Source\ModuleGame.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ModuleFont.cpp">
+    <ClCompile Include="Source\Fonts.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,7 +63,7 @@
     <ClInclude Include="Source\ModuleGame.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ModuleFont.h">
+    <ClInclude Include="Source\Fonts.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
