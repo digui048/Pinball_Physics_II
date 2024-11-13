@@ -19,7 +19,7 @@ bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
     font = new Fonts();
-	font->Initialise((char)' ',8);
+	font->Initialise((char)' ',8,3);
 	bool ret = true;
 
 	return ret;
@@ -48,9 +48,9 @@ update_status ModuleRender::Update()
 update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
-    font->Draw(0, 0, TextFormat("SCORE"));
+    font->Draw(4, 2, TextFormat("SCORE: "));
     
-    DrawFPS(80, 10);
+    DrawFPS(320, 10);
 
     EndDrawing();
 

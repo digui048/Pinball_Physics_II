@@ -7,7 +7,7 @@ public:
 	Fonts();
 	~Fonts();
 	
-	bool Initialise(char first_character, int character_size);
+	bool Initialise(char first_character, int character_size, int scale);
 	
 	bool Init();
 	bool CleanUp();

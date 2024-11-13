@@ -19,11 +19,12 @@ Fonts::Fonts()
 Fonts::~Fonts()
 {}
 
-bool Fonts::Initialise(char first_character, int character_size)
+bool Fonts::Initialise(char first_character, int character_size, int scale)
 {
 	img = LoadTexture("Assets/exportedSprites/Font.png");;
 	this->first_character = first_character;
 	this->character_size = character_size;
+	this->scale = scale;
 
 	//Calculate the number of columns and rows in the bitmap grid
 	columns = FONT_WIDTH / character_size;
@@ -73,10 +74,10 @@ void Fonts::DrawCharacter(int x, int y, char c, const Color& col) const
 
 	//Define a rectangle representing the character in the texture
 	Rectangle rc = { (float)pixel_x, (float)pixel_y, (float)character_size, (float)character_size };
-	Rectangle dest = { (float)x, (float)y, (float)character_size * scale, (float)character_size * scale };
+	Rectangle dest = { (float)x * 4.0f, (float)y*4.0f, (float)character_size * scale, (float)character_size * scale };
 
 	//Draw the character at the specified position with the specified color
-	DrawTextureRec(img, rc, { (float)x, (float)y }, col);
+	DrawTexturePro(img, rc, dest, { (float)x, (float)y }, 0.0f, col);
 }
 
 // Called before render is available
