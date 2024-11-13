@@ -15,6 +15,7 @@ class LeftFlipper;
 class RightFlipper;
 class Kicker;
 class Ball;
+class Score;
 
 class ModuleGame : public Module
 {

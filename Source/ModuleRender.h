@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "ModuleFont.h"
 
 #include <limits.h>
 
@@ -24,4 +25,5 @@ public:
 
 	Color background;
     Rectangle camera;
+	Fonts* font;
 };

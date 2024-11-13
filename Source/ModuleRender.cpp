@@ -7,6 +7,7 @@
 ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
     background = RAYWHITE;
+    font = nullptr;
 }
 
 // Destructor
@@ -17,6 +18,8 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
+    font = new Fonts();
+	font->Initialise((char)' ',8);
 	bool ret = true;
 
 	return ret;
@@ -45,7 +48,9 @@ update_status ModuleRender::Update()
 update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
-    DrawFPS(10, 10);
+    font->Draw(0, 0, TextFormat("SCORE"));
+    
+    DrawFPS(80, 10);
 
     EndDrawing();
 
