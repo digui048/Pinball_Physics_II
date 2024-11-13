@@ -13,6 +13,7 @@ class PhysicEntity;
 class Map;
 class LeftFlipper;
 class Kicker;
+class Ball;
 
 class ModuleGame : public Module
 {
@@ -52,6 +53,7 @@ public:
 	Map* physicMap;
 	LeftFlipper* physicLeftFlipper;
 	Kicker* physicKicker;
+	Ball* physicBall;
 
 	uint32 bonus_fx;
 

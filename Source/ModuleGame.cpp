@@ -365,6 +365,34 @@ private:
 	}
 };
 
+class Ball : public PhysicEntity
+{
+public:
+	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
+			Rectangle{ (float)x, (float)y, (float)texture.width * 2.0f, (float)texture.height * 2.0f },
+			Vector2{ (float)texture.width / 1.0f, (float)texture.height / 1.0f }, body->GetRotation() * RAD2DEG, WHITE);
+	}
+
+	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
+	{
+		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
+	}
+
+private:
+	Texture2D texture;
+};
+
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	ray_on = false;
@@ -410,6 +438,10 @@ bool ModuleGame::Start()
 	//Draw and Create OBJ Kicker
 	physicKicker = new Kicker(App->physics, SCREEN_WIDTH - 48, SCREEN_HEIGHT - 40, this, kicker);
 	entities.emplace_back(physicKicker);
+
+	//Draw and Create OBJ Ball
+	physicBall = new Ball(App->physics, SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, ball);
+	entities.emplace_back(physicBall);
 
 	return ret;
 }
