@@ -30,7 +30,6 @@ protected:
 	PhysBody* body;
 	Module* listener;
 };
-
 class Circle : public PhysicEntity
 {
 public:
@@ -58,7 +57,6 @@ private:
 	Texture2D texture;
 
 };
-
 class Box : public PhysicEntity
 {
 public:
@@ -479,7 +477,7 @@ public:
 		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener)
 		, texture(_texture)
 	{
-		changeGravity(2);
+		ChangeGravity(2);
 	}
 
 	void Update() override
@@ -498,10 +496,50 @@ public:
 
 private:
 	Texture2D texture;
-	void changeGravity(float gravity) 
+	void ChangeGravity(float gravity) 
 	{
 		body->body->SetGravityScale(gravity);
 	}
+};
+
+class Bumper1 : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[24] = {
+			0,10,
+			4,4,
+			10,0,
+			16, 0,
+			70, 26,
+			78, 32,
+			78, 36,
+			72, 40,
+			66, 40,
+			10, 26,
+			2, 20,
+			0, 16,
+
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper1(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24), _listener), texture(_texture)
+	{
+		
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
