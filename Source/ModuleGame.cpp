@@ -644,7 +644,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(physicMap);
 
 	//Draw and Create OBJ OutBounds
-	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT, this, map);
+	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT -24, this, map);
 	entities.emplace_back(physicOutBounds_down);
 
 	physicOutBounds_up = new OutBounds(App->physics, SCREEN_WIDTH / 2, 0, this, map);
@@ -660,6 +660,7 @@ bool ModuleGame::Start()
 
 	//Draw and Create OBJ LeftFlipper
 	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap);
+	physicLeftFlipper->RotateStatic(45);
 	entities.emplace_back(physicLeftFlipper);
 
 	//Draw and Create OBJ RightFlipper
@@ -719,7 +720,7 @@ update_status ModuleGame::Update()
 
 	// All draw functions ------------------------------------------------------
 
-
+	// Game entities
 	for (PhysicEntity* entity : entities)
 	{
 		entity->Update();
@@ -731,6 +732,13 @@ update_status ModuleGame::Update()
 				ray_hit = hit;
 			}
 		}
+	}
+
+	// Game loop ------------------------------------------------------
+
+	if (game_over == true)
+	{
+		DrawText("GAME OVER", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, 40, RED);
 	}
 	
 
@@ -769,7 +777,7 @@ void ModuleGame::OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB)
 		LOG("Collision BUMPER");
 		break;
 	case ColliderType::OUTBOUNDS:
-		LOG("Collision OUTBOUNDS");
+		printf("Collision OUTBOUNDS");
 		if (lostlife <= 0)
 		{
 			game_over = true;
