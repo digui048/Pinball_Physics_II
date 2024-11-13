@@ -16,6 +16,7 @@ class RightFlipper;
 class Kicker;
 class Ball;
 class Score;
+class OutBounds;
 
 class ModuleGame : public Module
 {
@@ -26,7 +27,7 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	void OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB);
 
 public:
 
@@ -53,10 +54,21 @@ public:
 
 	//Custom classes objects 
 	Map* physicMap;
+	OutBounds* physicOutBounds_down;
+	OutBounds* physicOutBounds_up;
+	OutBounds* physicOutBounds_left;
+	OutBounds* physicOutBounds_right;
 	LeftFlipper* physicLeftFlipper;
 	RightFlipper* physicRightFlipper;
 	Kicker* physicKicker;
 	Ball* physicBall;
+
+	//Score
+	Score* score;
+
+	//Game variables
+	int lostlife = 3;
+	bool game_over;
 
 	uint32 bonus_fx;
 

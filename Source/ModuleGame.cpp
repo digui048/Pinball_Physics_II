@@ -5,13 +5,23 @@
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 #include <iostream>
+
+enum class ColliderType {
+	FLIPPER,
+	BUMPER,
+	BALL,
+	KICKER,
+	MAP,
+	OUTBOUNDS
+};
 class PhysicEntity
 {
 protected:
 
-	PhysicEntity(PhysBody* _body, Module* _listener)
+	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype)
 		: body(_body)
 		, listener(_listener)
+		, ctype(ctype)
 	{
 
 	}
@@ -25,16 +35,49 @@ public:
 		return 0;
 	}
 	PhysBody* GetBody() const { return body; }
+	void ConvertToStatic() { body->body->SetType(b2_staticBody); }
+	void RotateStatic(float angle_) { 
+
+		b2Vec2 position = body->body->GetPosition(); // Obtain the position of the body
+		float angle = body->body->GetAngle(); // Obtain the angle of the body
+
+		// Rotation in radians
+		float newAngle = angle + DEG2RAD * angle_;
+
+		// Set the position and angle of the body
+		body->body->SetTransform(position, newAngle);
+	
+	}
+	ColliderType GetType() const { return ctype; }
 	
 protected:
 	PhysBody* body;
 	Module* listener;
+	ColliderType ctype;
+};
+class Score
+{
+private:
+	int score = 0;
+public:
+	void AddScore(int points)
+	{
+		score += points;
+	}
+	void ResetScore()
+	{
+		score = 0;
+	}
+	int GetScore()
+	{
+		return score;
+	}
 };
 class Circle : public PhysicEntity
 {
 public:
 	Circle(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener,ColliderType::BALL)
 		, texture(_texture)
 	{
 
@@ -61,7 +104,7 @@ class Box : public PhysicEntity
 {
 public:
 	Box(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener,ColliderType::BALL)
 		, texture(_texture)
 	{
 		
@@ -174,7 +217,7 @@ public:
 	};
 
 	Map(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150), _listener,ColliderType::MAP)
 		, texture(_texture)
 	{
 
@@ -189,6 +232,26 @@ public:
 
 private:
 	Texture2D texture;
+};
+class OutBounds : public PhysicEntity
+{
+public:
+	OutBounds(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, SCREEN_HEIGHT, 2), _listener, ColliderType::OUTBOUNDS)
+	{
+		ConvertToStatic();
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+	}
+
+	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
+	{
+		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
+	}
 };
 class LeftFlipper : public PhysicEntity
 {
@@ -216,7 +279,7 @@ public:
 
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x + 50, _y, 100, 30), _listener), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x + 50, _y, 100, 30), _listener, ColliderType::FLIPPER), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 		
@@ -322,7 +385,7 @@ public:
 
 
 	RightFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x + 32, _y, 100, 30), _listener), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x + 32, _y, 100, 30), _listener, ColliderType::FLIPPER), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 
@@ -407,7 +470,7 @@ class Kicker : public PhysicEntity
 {
 public:
 	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 28, 14), _listener)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 28, 14), _listener, ColliderType::KICKER)
 		, texture(_texture)
 	{
 
@@ -474,7 +537,7 @@ class Ball : public PhysicEntity
 {
 public:
 	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener, ColliderType::BALL)
 		, texture(_texture)
 	{
 		ChangeGravity(2);
@@ -525,7 +588,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper1(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24), _listener), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 		
 	}
@@ -580,10 +643,26 @@ bool ModuleGame::Start()
 	physicMap = new Map(App->physics, 0, 0, this, map);
 	entities.emplace_back(physicMap);
 
+	//Draw and Create OBJ OutBounds
+	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT, this, map);
+	entities.emplace_back(physicOutBounds_down);
+
+	physicOutBounds_up = new OutBounds(App->physics, SCREEN_WIDTH / 2, 0, this, map);
+	entities.emplace_back(physicOutBounds_up);
+
+	physicOutBounds_left = new OutBounds(App->physics, 0, SCREEN_HEIGHT / 2, this, map);
+	physicOutBounds_left->RotateStatic(90);
+	entities.emplace_back(physicOutBounds_left);
+
+	physicOutBounds_right = new OutBounds(App->physics, SCREEN_WIDTH, SCREEN_HEIGHT / 2, this, map);
+	physicOutBounds_right->RotateStatic(90);
+	entities.emplace_back(physicOutBounds_right);
+
 	//Draw and Create OBJ LeftFlipper
 	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap);
 	entities.emplace_back(physicLeftFlipper);
 
+	//Draw and Create OBJ RightFlipper
 	physicRightFlipper = new RightFlipper(App->physics, SCREEN_WIDTH / 2 , SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, rightFlipper, physicMap);
 	entities.emplace_back(physicRightFlipper);
 
@@ -673,11 +752,39 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+void ModuleGame::OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
 
+	switch (bodyB->GetType())
+	{
+	case ColliderType::KICKER:
+		LOG("Collision KICKER");
+		break;
+	case ColliderType::FLIPPER:
+		LOG("Collision FLIPPER");
+		break;
+	case ColliderType::BUMPER:
+		LOG("Collision BUMPER");
+		break;
+	case ColliderType::OUTBOUNDS:
+		LOG("Collision OUTBOUNDS");
+		if (lostlife <= 0)
+		{
+			game_over = true;
+		}
+		else
+		{
+			lostlife--;
+		}
+		break;
+	case ColliderType::MAP:
+		LOG("Collision MAP");
+		break;
+	default:
+		break;
+	}
 	/*
 	int x, y;
 	if(bodyA)
