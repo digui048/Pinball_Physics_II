@@ -660,7 +660,6 @@ bool ModuleGame::Start()
 
 	//Draw and Create OBJ LeftFlipper
 	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap);
-	physicLeftFlipper->RotateStatic(45);
 	entities.emplace_back(physicLeftFlipper);
 
 	//Draw and Create OBJ RightFlipper
