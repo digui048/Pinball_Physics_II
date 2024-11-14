@@ -306,15 +306,15 @@ private:
 		b2Body* lFlipperBody = GetBody()->body;
 		lFlipperBody->SetAngularVelocity(0.0f);
 		b2Vec2 localAnchor;
-		localAnchor.Set(0,0);
+		localAnchor.Set(-1,0);
 		b2Vec2 worldAnchor = lFlipperBody->GetWorldPoint(localAnchor);
 		lFlipperJointDef.Initialize(lFlipperBody, mapBody, worldAnchor);
 
 
-		lFlipperJointDef.lowerAngle = 0 * b2_pi;
-		lFlipperJointDef.upperAngle = 0.15f * b2_pi;
+		lFlipperJointDef.lowerAngle = -0.15 * b2_pi;
+		lFlipperJointDef.upperAngle = 0 * b2_pi;
 		lFlipperJointDef.enableLimit = true;
-		lFlipperJointDef.maxMotorTorque = 50.0f;
+		lFlipperJointDef.maxMotorTorque = 1000.0f;
 		lFlipperJointDef.motorSpeed = 0.0f;
 		lFlipperJointDef.enableMotor = true;
 
@@ -331,7 +331,7 @@ private:
 		if (timer > 0)
 		{
 			timer -= dt;
-			lFlipperJoint->SetMotorSpeed(10.0f);
+			lFlipperJoint->SetMotorSpeed(5000);
 		}
 		else
 		{
@@ -412,15 +412,15 @@ private:
 		b2Body* rFlipperBody = GetBody()->body;
 		rFlipperBody->SetAngularVelocity(0.0f);
 		b2Vec2 localAnchor;
-		localAnchor.Set(0, 0);
+		localAnchor.Set(1, 0);
 		b2Vec2 worldAnchor = rFlipperBody->GetWorldPoint(localAnchor);
 		rFlipperJointDef.Initialize(rFlipperBody, mapBody, worldAnchor);
 
 
-		rFlipperJointDef.lowerAngle = -0.15f * b2_pi;
-		rFlipperJointDef.upperAngle = 0 * b2_pi;
+		rFlipperJointDef.lowerAngle = 0 * b2_pi;
+		rFlipperJointDef.upperAngle = 0.15 * b2_pi;
 		rFlipperJointDef.enableLimit = true;
-		rFlipperJointDef.maxMotorTorque = 50.0f;
+		rFlipperJointDef.maxMotorTorque = 5000.0f;
 		rFlipperJointDef.motorSpeed = 0.0f;
 		rFlipperJointDef.enableMotor = true;
 
@@ -438,7 +438,7 @@ private:
 		{
 			timer -= dt;
 			//Yes, sure its -
-			rFlipperJoint->SetMotorSpeed(-10.0f);
+			rFlipperJoint->SetMotorSpeed(-1000.0f);
 		}
 		else
 		{
