@@ -103,8 +103,6 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, fl
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 	body.angle = rotation * b2_pi;
 
-	printf("angle: %f", body.angle);
-
 	b2Body* b = world->CreateBody(&body);
 	b2PolygonShape box;
 	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);

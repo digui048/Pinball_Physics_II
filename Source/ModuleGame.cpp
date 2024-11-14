@@ -279,7 +279,7 @@ public:
 
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x + 50, _y, 100, 30), _listener, ColliderType::FLIPPER), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x + 50, _y + 20, 80, 20), _listener, ColliderType::FLIPPER), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 		
@@ -291,7 +291,7 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y - 12 }, (body->GetRotation() - 0.25) * RAD2DEG, 2.0f, WHITE);
 		Cooldown();
 		Push();
 	}
@@ -306,7 +306,7 @@ private:
 		b2Body* lFlipperBody = GetBody()->body;
 		lFlipperBody->SetAngularVelocity(0.0f);
 		b2Vec2 localAnchor;
-		localAnchor.Set(-1,0);
+		localAnchor.Set(-0.8,0);
 		b2Vec2 worldAnchor = lFlipperBody->GetWorldPoint(localAnchor);
 		lFlipperJointDef.Initialize(lFlipperBody, mapBody, worldAnchor);
 
@@ -320,8 +320,6 @@ private:
 
 		lFlipperJoint = (b2RevoluteJoint*)myWorld->CreateJoint(&lFlipperJointDef);
 
-		std::cout << "x anchor: " << lFlipperJoint->GetLocalAnchorA().x << std::endl;
-		std::cout << "y anchor: " << lFlipperJoint->GetLocalAnchorA().y << std::endl;
 	}
 
 	void Push() 
@@ -331,7 +329,7 @@ private:
 		if (timer > 0)
 		{
 			timer -= dt;
-			lFlipperJoint->SetMotorSpeed(5000);
+			lFlipperJoint->SetMotorSpeed(250.0f);
 		}
 		else
 		{
@@ -340,7 +338,7 @@ private:
 		if (IsKeyPressed(KEY_LEFT) && cooldown <= 0)
 		{
 			timer = timerLenght;
-			cooldown = 20;
+			cooldown = 40;
 		}
 	}
 
@@ -357,7 +355,7 @@ private:
 	float timerLenght = 10;
 	float dt;
 
-	float cooldown = 20;
+	float cooldown = 40;
 };
 class RightFlipper : public PhysicEntity
 {
@@ -385,7 +383,7 @@ public:
 
 
 	RightFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x + 32, _y, 100, 30), _listener, ColliderType::FLIPPER), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 80, 20), _listener, ColliderType::FLIPPER), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 
@@ -397,7 +395,7 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x - 30, (float)y - 30}, (body->GetRotation() + 0.25) * RAD2DEG, 2.0f, WHITE);
 		Cooldown();
 		Push();
 	}
@@ -412,7 +410,7 @@ private:
 		b2Body* rFlipperBody = GetBody()->body;
 		rFlipperBody->SetAngularVelocity(0.0f);
 		b2Vec2 localAnchor;
-		localAnchor.Set(1, 0);
+		localAnchor.Set(0.8, 0);
 		b2Vec2 worldAnchor = rFlipperBody->GetWorldPoint(localAnchor);
 		rFlipperJointDef.Initialize(rFlipperBody, mapBody, worldAnchor);
 
@@ -426,8 +424,6 @@ private:
 
 		rFlipperJoint = (b2RevoluteJoint*)myWorld->CreateJoint(&rFlipperJointDef);
 
-		std::cout << "x anchor: " << rFlipperJoint->GetLocalAnchorA().x << std::endl;
-		std::cout << "y anchor: " << rFlipperJoint->GetLocalAnchorA().y << std::endl;
 	}
 
 	void Push()
@@ -437,8 +433,7 @@ private:
 		if (timer > 0)
 		{
 			timer -= dt;
-			//Yes, sure its -
-			rFlipperJoint->SetMotorSpeed(-1000.0f);
+			rFlipperJoint->SetMotorSpeed(-250.0f);
 		}
 		else
 		{
@@ -447,7 +442,7 @@ private:
 		if (IsKeyPressed(KEY_RIGHT) && cooldown <= 0)
 		{
 			timer = timerLenght;
-			cooldown = 20;
+			cooldown = 40;
 		}
 	}
 
@@ -464,7 +459,7 @@ private:
 	float timerLenght = 10;
 	float dt;
 
-	float cooldown = 20;
+	float cooldown = 40;
 };
 class Kicker : public PhysicEntity
 {
@@ -541,6 +536,7 @@ public:
 		, texture(_texture)
 	{
 		ChangeGravity(2);
+		
 	}
 
 	void Update() override
@@ -663,7 +659,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(physicLeftFlipper);
 
 	//Draw and Create OBJ RightFlipper
-	physicRightFlipper = new RightFlipper(App->physics, SCREEN_WIDTH / 2 , SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, rightFlipper, physicMap);
+	physicRightFlipper = new RightFlipper(App->physics, SCREEN_WIDTH / 2 + 32 , SCREEN_HEIGHT - SCREEN_HEIGHT / 6 +22, this, rightFlipper, physicMap);
 	entities.emplace_back(physicRightFlipper);
 
 	//Draw and Create OBJ Kicker
@@ -763,6 +759,7 @@ void ModuleGame::OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
+	printf("AAA");
 
 	switch (bodyB->GetType())
 	{
