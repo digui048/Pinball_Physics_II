@@ -95,6 +95,29 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 
 	return pbody;
 }
+PhysBody* ModulePhysics::CreateCircleKinematic(int x, int y, int radius)
+{
+	b2BodyDef body;
+	body.type = b2_kinematicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2CircleShape shape;
+	shape.m_radius = PIXEL_TO_METERS(radius);
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.density = 1.0f;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+	pbody->width = pbody->height = radius;
+
+	return pbody;
+}
 
 PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, float rotation)
 {
@@ -236,7 +259,7 @@ update_status ModulePhysics::PostUpdate()
 					b2CircleShape* shape = (b2CircleShape*)f->GetShape();
 					b2Vec2 pos = f->GetBody()->GetPosition();
 					
-					DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), (float)METERS_TO_PIXELS(shape->m_radius), Color{0, 0, 0, 0});
+					DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), (float)METERS_TO_PIXELS(shape->m_radius), Color{0, 0, 0, 120});
 				}
 				break;
 

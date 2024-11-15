@@ -17,6 +17,14 @@ class Kicker;
 class Ball;
 class Score;
 class OutBounds;
+class Bumper1;
+class Bumper1mirror;
+class Bumper2;
+class Bumper2mirror;
+class Bumper3;
+class Bumper4;
+class Bumper5;
+class Bumper5mirror;
 
 class ModuleGame : public Module
 {
@@ -47,7 +55,7 @@ public:
 	//Flipper textures
 	Texture2D rightFlipper, leftFlipper;
 	//Bumpers Textures
-	Texture2D Bumper1, Bumper1Mirrored, Bumper2, Bumper2Mirrored, Bumper3, Bumper4, Bumper5, Bumper5Mirrored;
+	Texture2D bumper1, bumper1Mirrored, bumper2, bumper2Mirrored, bumper3, bumper4, bumper5, bumper5Mirrored;
 	//Ball & kicker textures
 	Texture2D ball, kicker;
 
@@ -62,6 +70,14 @@ public:
 	RightFlipper* physicRightFlipper;
 	Kicker* physicKicker;
 	Ball* physicBall;
+	Bumper1* physicalBumper1;
+	Bumper1mirror* physicalBumper1mirror;
+	Bumper2* physicalBumper2;
+	Bumper2mirror* physicalBumper2mirror;
+	Bumper3* physicalBumper3;
+	Bumper4* physicalBumper4;
+	Bumper5* physicalBumper5;
+	Bumper5mirror* physicalBumper5mirror;
 
 	//Score
 	Score* score;

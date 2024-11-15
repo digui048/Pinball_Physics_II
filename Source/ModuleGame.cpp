@@ -560,7 +560,6 @@ private:
 		body->body->SetGravityScale(gravity);
 	}
 };
-
 class Bumper1 : public PhysicEntity
 {
 public:
@@ -590,19 +589,18 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
 	Texture2D texture;
 
 };
-
 class Bumper1mirror : public PhysicEntity
 {
 public:
 
-	static constexpr int bumper1[18] = {
+	static constexpr int bumper1chain[18] = {
 			0, 94,
 			44, 116,
 			56, 102,
@@ -617,7 +615,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper1mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 18), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1chain, 18), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -626,14 +624,13 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
 	Texture2D texture;
 
 };
-
 class Bumper2 : public PhysicEntity
 {
 public:
@@ -663,14 +660,13 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
 	Texture2D texture;
 
 };
-
 class Bumper2mirror : public PhysicEntity
 {
 public:
@@ -702,14 +698,13 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
 	Texture2D texture;
 
 };
-
 class Bumper3 : public PhysicEntity
 {
 public:
@@ -742,14 +737,37 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
 	Texture2D texture;
 
 };
+class Bumper4 : public PhysicEntity
+{
+public:
 
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper4(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateCircleKinematic(_x, _y, 36), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 64, (float)y - 64 }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
 class Bumper5 : public PhysicEntity
 {
 public:
@@ -776,14 +794,13 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
 	Texture2D texture;
 
 };
-
 class Bumper5mirror : public PhysicEntity
 {
 public:
@@ -810,7 +827,7 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 	}
 
 private:
@@ -846,6 +863,16 @@ bool ModuleGame::Start()
 	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
 	ball = LoadTexture("Assets/exportedSprites/Ball.png");
 	
+	//Bumpers
+	bumper1 = LoadTexture("Assets/exportedSprites/Bumper1.png");
+	bumper1Mirrored = LoadTexture("Assets/exportedSprites/Bumper1mirror.png");
+	bumper2 = LoadTexture("Assets/exportedSprites/Bumper2.png");
+	bumper2Mirrored = LoadTexture("Assets/exportedSprites/Bumper2mirrored.png");
+	bumper3 = LoadTexture("Assets/exportedSprites/Bumper3.png");
+	bumper4 = LoadTexture("Assets/exportedSprites/Bumper4.png");
+	bumper5 = LoadTexture("Assets/exportedSprites/Bumper5.png");
+	bumper5Mirrored = LoadTexture("Assets/exportedSprites/Bumper5mirrored.png");
+
 	//Load Game Sounds
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 
@@ -886,6 +913,22 @@ bool ModuleGame::Start()
 	//Draw and Create OBJ Ball
 	physicBall = new Ball(App->physics, SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, ball);
 	entities.emplace_back(physicBall);
+
+	//Bumpers
+	physicalBumper1 = new Bumper1(App->physics, SCREEN_WIDTH - SCREEN_WIDTH / 3 - 20, SCREEN_HEIGHT - SCREEN_HEIGHT / 3 - 20, this, bumper1, physicMap);
+	entities.emplace_back(physicalBumper1);
+
+	physicalBumper1mirror = new Bumper1mirror(App->physics, SCREEN_WIDTH / 3 - 20 - 56, SCREEN_HEIGHT - SCREEN_HEIGHT / 3 - 20, this, bumper1Mirrored, physicMap);
+	entities.emplace_back(physicalBumper1mirror);
+
+	physicalBumper2 = new Bumper2(App->physics, SCREEN_WIDTH / 4 - 20, SCREEN_HEIGHT / 3 - 20, this, bumper2, physicMap);
+	entities.emplace_back(physicalBumper2);
+
+	physicalBumper3 = new Bumper3(App->physics, SCREEN_WIDTH - SCREEN_WIDTH/2 + 30, SCREEN_HEIGHT / 3, this, bumper3, physicMap);
+	entities.emplace_back(physicalBumper3);
+
+	physicalBumper4 = new Bumper4(App->physics, SCREEN_WIDTH - SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 3 + 80, this, bumper4, physicMap);
+	entities.emplace_back(physicalBumper4);
 
 	return ret;
 }
