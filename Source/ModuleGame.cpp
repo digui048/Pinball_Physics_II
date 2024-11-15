@@ -565,28 +565,245 @@ class Bumper1 : public PhysicEntity
 {
 public:
 
-	static constexpr int bumper1[24] = {
-			0,10,
-			4,4,
-			10,0,
-			16, 0,
-			70, 26,
-			78, 32,
-			78, 36,
-			72, 40,
-			66, 40,
-			10, 26,
-			2, 20,
-			0, 16,
-
+	static constexpr int bumper1[20] = {
+			56, 92,
+			12, 116,
+			0, 104,
+			0, 82,
+			32, 18,
+			38, 8,
+			42, 0,
+			52, 0,
+			56, 6,
+			56, 18,
 	};
 
 	PhysBody* GetBody() const { return body; }
 
 	Bumper1(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 20), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 		
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Bumper1mirror : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[18] = {
+			0, 94,
+			44, 116,
+			56, 102,
+			56, 82,
+			18, 8,
+			14, 0,
+			4, 0,
+			0, 4,
+			0, 22,
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper1mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 18), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Bumper2 : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[20] = {
+			26, 38,
+			26, 52,
+			24, 58,
+			18, 58,
+			12, 54,
+			0, 18,
+			0, 4,
+			6, 0,
+			12, 2,
+			16, 10,
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper2(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 20), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Bumper2mirror : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[24] = {
+			0, 38,
+			0, 52,
+			4, 58,
+			8, 58,
+			14, 54,
+			20, 36,
+			26, 18,
+			26, 2,
+			22, 0,
+			18, 0,
+			12, 2,
+			8, 16,
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper2mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Bumper3 : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[26] = {
+			76, 116,
+			74, 124, 
+			68, 128,
+			60, 128,
+			54, 124,
+			52, 116,
+			52, 10,
+			54, 2,
+			60, 0,
+			68, 0,
+			74, 2,
+			76, 10,
+			76, 46,
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper3(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 26), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Bumper5 : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[14] = {
+			0, 58,
+			0, 68,
+			10, 78,
+			18, 78,
+			70, 26,
+			70, 10,
+			58, 0,
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper5(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 14), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		DrawTextureEx(texture, Vector2{ (float)x - 32, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Bumper5mirror : public PhysicEntity
+{
+public:
+
+	static constexpr int bumper1[14] = {
+			10, 0,
+			0, 10,
+			0, 26,
+			52, 78,
+			58, 78,
+			70, 68,
+			70, 58,
+	};
+
+	PhysBody* GetBody() const { return body; }
+
+	Bumper5mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 14), _listener, ColliderType::BUMPER), texture(_texture)
+	{
+
 	}
 
 	void Update() override
