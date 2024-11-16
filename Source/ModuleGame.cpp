@@ -871,7 +871,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(physicMap);
 
 	//Draw and Create OBJ OutBounds
-	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT -24, this, map);
+	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT -36, this, map);
 	entities.emplace_back(physicOutBounds_down);
 
 	physicOutBounds_up = new OutBounds(App->physics, SCREEN_WIDTH / 2, 0, this, map);
@@ -995,6 +995,7 @@ update_status ModuleGame::Update()
 			physicBall->body->body->SetTransform(b2Vec2(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6), 0);
 			death = false;
 			rounds++;
+			score.ResetScore();
 		}
 		else if (rounds >= 3)
 		{

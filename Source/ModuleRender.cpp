@@ -50,6 +50,7 @@ update_status ModuleRender::PostUpdate()
     // Draw everything in our batch!
     font->Draw(4, 2, TextFormat("SCORE:%d", App->scene_intro->score.GetScore()));
 	font->Draw(4, 12, TextFormat("HIGHSCORE:%d", App->scene_intro->score.SaveScore()));
+	font->Draw(4, 22, TextFormat("PREVIOUS SCORE:%d", App->scene_intro->score.SavePreviousScore()));
     
     DrawFPS(320, 10);
 

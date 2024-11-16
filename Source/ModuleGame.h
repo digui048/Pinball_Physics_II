@@ -29,8 +29,10 @@ struct Score
 {
 private:
 	int score;
+	int highscore;
+	int previousscore;
 public:
-	Score() : score(0) {}
+	Score() : score(0),highscore(0) {}
 	void AddScore(int points)
 	{
 		score += points;
@@ -42,12 +44,17 @@ public:
 	// Saves the highest score and it doesn't change until better score is achieved and returns the highest score
 	int SaveScore()
 	{
-		static int highscore = 0;
 		if (score > highscore)
 		{
 			highscore = score;
 		}
 		return highscore;
+	}
+	// Saves the previous score and returns it
+	int SavePreviousScore()
+	{
+		previousscore = score;
+		return previousscore;
 	}
 	// Getters
 	int GetScore()
