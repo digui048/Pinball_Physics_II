@@ -849,6 +849,7 @@ bool ModuleGame::Start()
 	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
 	ball = LoadTexture("Assets/exportedSprites/Ball.png");
 	kicker = LoadTexture("Assets/exportedSprites/Kicker.png");
+	gameover = LoadTexture("Assets/exportedSprites/GameOver.png");
 	//Bumpers
 	bumper1 = LoadTexture("Assets/exportedSprites/Bumper1.png");
 	bumper1Mirrored = LoadTexture("Assets/exportedSprites/Bumper1mirror.png");
@@ -985,21 +986,25 @@ update_status ModuleGame::Update()
 			}
 		}
 	}
-
+	
 	// Game loop ------------------------------------------------------
 	if (!game_over)
 	{
-		if (death)
+		if (death && !(rounds >= 3))
 		{
 			physicBall->body->body->SetTransform(b2Vec2(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6), 0);
 			death = false;
+			rounds++;
+		}
+		else if (rounds >= 3)
+		{
+			game_over = true;
 		}
 	}
 	else
 	{
-		DrawText("GAME OVER", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, 40, RED);
+		DrawTextureEx(gameover, { 0,0 }, 0.0f, 2, WHITE);
 	}
-	
 
 	// ray -----------------
 	if(ray_on == true)
@@ -1023,40 +1028,32 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
-	//printf("BONK! \n");
+	printf("BONK! \n");
 
-	//switch (bodyB->GetType())
-	//{
-	//case ColliderType::KICKER:
-	//	LOG("Collision KICKER");
-	//	break;
-	//case ColliderType::FLIPPER:
-	//	LOG("Collision FLIPPER");
-	//	break;
-	//case ColliderType::BUMPER:
-	//	LOG("Collision BUMPER");
-	//	score.AddScore(100);
-	//	OnBumperHit();
-	//	break;
-	//case ColliderType::OUTBOUNDS:
-	//	printf("Collision OUTBOUNDS");
-	//	if (lostlife <= 0)
-	//	{
-	//		game_over = true;
-	//	}
-	//	else
-	//	{
-	//		lostlife--;
-	//		death = true;
-	//	}
-	//	break;
-	//case ColliderType::MAP:
-	//	LOG("Collision MAP");
-	//	break;
-	//default:
-	//	printf("aaa");
-	//	break; 
-	//}
+	/*switch (bodyB->GetType())
+	{
+	case ColliderType::KICKER:
+		LOG("Collision KICKER");
+		break;
+	case ColliderType::FLIPPER:
+		LOG("Collision FLIPPER");
+		break;
+	case ColliderType::BUMPER:
+		LOG("Collision BUMPER");
+		score.AddScore(100);
+		OnBumperHit();
+		break;
+	case ColliderType::OUTBOUNDS:
+		printf("Collision OUTBOUNDS");
+		death = true;
+		break;
+	case ColliderType::MAP:
+		LOG("Collision MAP");
+		break;
+	default:
+		printf("aaa");
+		break; 
+	}*/
 	/*
 	int x, y;
 	if(bodyA)

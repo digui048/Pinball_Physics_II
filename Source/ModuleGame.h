@@ -95,7 +95,8 @@ public:
 	Texture2D bumper1, bumper1Mirrored, bumper2, bumper2Mirrored, bumper3, bumper4, bumper5, bumper5Mirrored;
 	//Ball & kicker textures
 	Texture2D ball, kicker;
-
+	//Game over texture
+	Texture2D gameover;
 
 	//Custom classes objects 
 	Map* physicMap;
@@ -117,7 +118,6 @@ public:
 	Bumper4* physicalBumper4_1;
 	Bumper5* physicalBumper5;
 	Bumper5mirror* physicalBumper5mirror;
-	void TestDoubleBumper(PhysBody* bodyA, PhysBody* bodyB);
 	//Score
 	Score score;
 
@@ -125,7 +125,7 @@ public:
 	int lostlife = 3;
 	bool game_over;
 	bool death;
-	bool bonus;
+	int rounds;
 	uint32 bonus_fx;
 
 	vec2<int> ray;

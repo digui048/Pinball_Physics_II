@@ -26,5 +26,4 @@ public:
 	Color background;
     Rectangle camera;
 	Fonts* font;
-	int score;
 };

@@ -8,7 +8,6 @@ ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, s
 {
     background = RAYWHITE;
     font = nullptr;
-    score = 0;
 }
 
 // Destructor
