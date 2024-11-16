@@ -1029,24 +1029,18 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
-<<<<<<< Updated upstream
+
 	printf("BONK! \n");
 
-	/*switch (bodyB->GetType())
-=======
 
 	switch (bodyB->entity->GetType())
->>>>>>> Stashed changes
 	{
 	case ColliderType::KICKER:
 		LOG("Collision KICKER");
 		break;
 	case ColliderType::FLIPPER:
 		LOG("Collision FLIPPER");
-<<<<<<< Updated upstream
-=======
 		printf("Flipper");
->>>>>>> Stashed changes
 		break;
 	case ColliderType::BUMPER:
 		LOG("Collision BUMPER");
@@ -1055,9 +1049,8 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		break;
 	case ColliderType::OUTBOUNDS:
 		printf("Collision OUTBOUNDS");
-<<<<<<< Updated upstream
 		death = true;
-=======
+
 		if (lostlife <= 0)
 		{
 			game_over = true;
@@ -1067,21 +1060,18 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			lostlife--;
 			death = true;
 		}
->>>>>>> Stashed changes
 		break;
 	case ColliderType::MAP:
 		LOG("Collision MAP");
 		break;
 	default:
-<<<<<<< Updated upstream
 		printf("aaa");
 		break; 
-	}*/
-=======
-
-		break; 
 	}
->>>>>>> Stashed changes
+
+
+	}
+
 	/*
 	int x, y;
 	if(bodyA)
@@ -1095,7 +1085,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		bodyB->GetPosition(x, y);
 		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
 	}*/
-}
+
 
 void ModuleGame::OnBumperHit()
 {
