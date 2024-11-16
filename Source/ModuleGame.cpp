@@ -19,7 +19,7 @@ class PhysicEntity
 {
 protected:
 
-	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype)
+	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype = ColliderType::NULLCOLLIDER)
 		: body(_body)
 		, listener(_listener)
 		, ctype(ctype)
@@ -60,7 +60,7 @@ class Circle : public PhysicEntity
 {
 public:
 	Circle(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener,ColliderType::BALL)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 14, this), _listener,ColliderType::BALL)
 		, texture(_texture)
 	{
 
@@ -87,7 +87,7 @@ class Box : public PhysicEntity
 {
 public:
 	Box(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener,ColliderType::BALL)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50, 0, this), _listener,ColliderType::BALL)
 		, texture(_texture)
 	{
 		
@@ -200,7 +200,7 @@ public:
 	};
 
 	Map(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150), _listener,ColliderType::MAP)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150, this), _listener,ColliderType::MAP)
 		, texture(_texture)
 	{
 
@@ -220,7 +220,7 @@ class OutBounds : public PhysicEntity
 {
 public:
 	OutBounds(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, SCREEN_HEIGHT, 2), _listener, ColliderType::OUTBOUNDS)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, SCREEN_HEIGHT, 2,0, this), _listener, ColliderType::OUTBOUNDS)
 	{
 		ConvertToStatic();
 	}
@@ -262,7 +262,7 @@ public:
 
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x + 50, _y + 20, 80, 20), _listener, ColliderType::FLIPPER), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x + 50, _y + 20, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 		
@@ -366,7 +366,7 @@ public:
 
 
 	RightFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 80, 20), _listener, ColliderType::FLIPPER), texture(_texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture)
 	{
 		InitializeJoint(map->GetBody()->body);
 
@@ -448,7 +448,7 @@ class Kicker : public PhysicEntity
 {
 public:
 	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14), _listener, ColliderType::KICKER)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14, 0, this), _listener, ColliderType::KICKER)
 		, texture(_texture)
 	{
 
@@ -515,7 +515,7 @@ class Ball : public PhysicEntity
 {
 public:
 	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 14), _listener, ColliderType::BALL)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 14, this), _listener, ColliderType::BALL)
 		, texture(_texture)
 	{
 		ChangeGravity(2);
@@ -564,7 +564,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper1(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 20), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 20, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 		
 	}
@@ -599,7 +599,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper1mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1chain, 12), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1chain, 12, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -635,7 +635,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper2(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 20), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 20, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -673,7 +673,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper2mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 24, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -712,7 +712,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper3(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 26), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 26, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -736,7 +736,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper4(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateCircleKinematic(_x, _y, 36), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateCircleKinematic(_x, _y, 36, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -770,7 +770,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper5(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 14), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 14, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -803,7 +803,7 @@ public:
 	PhysBody* GetBody() const { return body; }
 
 	Bumper5mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 14), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1, 14, this), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
@@ -1029,15 +1029,24 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
+<<<<<<< Updated upstream
 	printf("BONK! \n");
 
 	/*switch (bodyB->GetType())
+=======
+
+	switch (bodyB->entity->GetType())
+>>>>>>> Stashed changes
 	{
 	case ColliderType::KICKER:
 		LOG("Collision KICKER");
 		break;
 	case ColliderType::FLIPPER:
 		LOG("Collision FLIPPER");
+<<<<<<< Updated upstream
+=======
+		printf("Flipper");
+>>>>>>> Stashed changes
 		break;
 	case ColliderType::BUMPER:
 		LOG("Collision BUMPER");
@@ -1046,15 +1055,33 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		break;
 	case ColliderType::OUTBOUNDS:
 		printf("Collision OUTBOUNDS");
+<<<<<<< Updated upstream
 		death = true;
+=======
+		if (lostlife <= 0)
+		{
+			game_over = true;
+		}
+		else
+		{
+			lostlife--;
+			death = true;
+		}
+>>>>>>> Stashed changes
 		break;
 	case ColliderType::MAP:
 		LOG("Collision MAP");
 		break;
 	default:
+<<<<<<< Updated upstream
 		printf("aaa");
 		break; 
 	}*/
+=======
+
+		break; 
+	}
+>>>>>>> Stashed changes
 	/*
 	int x, y;
 	if(bodyA)
