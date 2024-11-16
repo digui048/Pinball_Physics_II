@@ -73,10 +73,10 @@ update_status ModulePhysics::PreUpdate()
 }
 
 
-PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, PhysicEntity* entity_)
 {
 	PhysBody* pbody = new PhysBody();
-
+	pbody->entity = entity_;
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
@@ -99,11 +99,14 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 
 	return pbody;
 }
-PhysBody* ModulePhysics::CreateCircleKinematic(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateCircleKinematic(int x, int y, int radius, PhysicEntity* entity_)
 {
+	PhysBody* pbody = new PhysBody();
 	b2BodyDef body;
+	pbody->entity = entity_;
 	body.type = b2_kinematicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&body);
 
@@ -115,23 +118,24 @@ PhysBody* ModulePhysics::CreateCircleKinematic(int x, int y, int radius)
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
+
 	pbody->body = b;
-	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = radius;
 
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, float rotation)
+PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, float rotation, PhysicEntity* entity_)
 {
 	PhysBody* pbody = new PhysBody();
-
+	pbody->entity = entity_;
+	
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 	body.angle = rotation * b2_pi;
 	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+	
 
 	b2Body* b = world->CreateBody(&body);
 	b2PolygonShape box;
@@ -201,9 +205,10 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
+PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size, PhysicEntity* entity_)
 {
 	PhysBody* pbody = new PhysBody();
+	pbody->entity = entity_;
 	b2BodyDef body;
 	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));

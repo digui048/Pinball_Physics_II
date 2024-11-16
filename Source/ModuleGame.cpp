@@ -6,7 +6,8 @@
 #include "ModulePhysics.h"
 #include <iostream>
 
-enum class ColliderType {
+enum ColliderType {
+	NULLCOL,
 	FLIPPER,
 	BUMPER,
 	BALL,
@@ -18,7 +19,7 @@ class PhysicEntity
 {
 protected:
 
-	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype)
+	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype = ColliderType::NULLCOL)
 		: body(_body)
 		, listener(_listener)
 		, ctype(ctype)
@@ -217,7 +218,7 @@ public:
 	};
 
 	Map(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150), _listener,ColliderType::MAP)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150, this), _listener,ColliderType::MAP)
 		, texture(_texture)
 	{
 
@@ -465,7 +466,7 @@ class Kicker : public PhysicEntity
 {
 public:
 	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14), _listener, ColliderType::KICKER)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14, 0, this), _listener, ColliderType::KICKER)
 		, texture(_texture)
 	{
 
@@ -1032,35 +1033,35 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	App->audio->PlayFx(bonus_fx);
 	printf("AAA");
 
-/*	switch (bodyB->GetType())
-	{
-	case ColliderType::KICKER:
-		LOG("Collision KICKER");
-		break;
-	case ColliderType::FLIPPER:
-		LOG("Collision FLIPPER");
-		break;
-	case ColliderType::BUMPER:
-		LOG("Collision BUMPER");
-		break;
-	case ColliderType::OUTBOUNDS:
-		printf("Collision OUTBOUNDS");
-		if (lostlife <= 0)
-		{
-			game_over = true;
-		}
-		else
-		{
-			lostlife--;
-		}
-		break;
-	case ColliderType::MAP:
-		LOG("Collision MAP");
-		break;
-	default:
-		printf("aaa");
-		break; 
-	}*/
+	//switch (bodyB->entity->GetType())
+	//{
+	//case ColliderType::KICKER:
+	//	printf("Collision KICKER");
+	//	break;
+	//case ColliderType::FLIPPER:
+	//	LOG("Collision FLIPPER");
+	//	break;
+	//case ColliderType::BUMPER:
+	//	LOG("Collision BUMPER");
+	//	break;
+	//case ColliderType::OUTBOUNDS:
+	//	printf("Collision OUTBOUNDS");
+	//	if (lostlife <= 0)
+	//	{
+	//		game_over = true;
+	//	}
+	//	else
+	//	{
+	//		lostlife--;
+	//	}
+	//	break;
+	//case ColliderType::MAP:
+	//	LOG("Collision MAP");
+	//	break;
+	//default:
+	//	printf("aaa");
+	//	break; 
+	//}
 	/*
 	int x, y;
 	if(bodyA)

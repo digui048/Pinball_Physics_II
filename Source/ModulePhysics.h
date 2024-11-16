@@ -13,13 +13,14 @@
 
 #define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
 #define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
-
+class PhysicEntity;
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
 {
 public:
-	PhysBody() : listener(NULL), body(NULL)
-	{}
+	PhysBody(PhysicEntity* entity_ = NULL) : listener(NULL), body(NULL), entity(entity_)
+	{
+	}
 
 	//void GetPosition(int& x, int& y) const;
 	void GetPhysicPosition(int& x, int &y) const;
@@ -30,6 +31,7 @@ public:
 public:
 	int width, height;
 	b2Body* body;
+	PhysicEntity* entity;
 	Module* listener;
 };
 
@@ -45,12 +47,12 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(int x, int y, int radius);
-	PhysBody* CreateCircleKinematic(int x, int y, int radius);
-	PhysBody* CreateRectangle(int x, int y, int width, int height, float rotation = 0.0f);
+	PhysBody* CreateCircle(int x, int y, int radius, PhysicEntity* entity_ = NULL);
+	PhysBody* CreateCircleKinematic(int x, int y, int radius, PhysicEntity* entity_ = NULL);
+	PhysBody* CreateRectangle(int x, int y, int width, int height, float rotation = 0.0f, PhysicEntity* entity_ = NULL);
 	PhysBody* CreateKinematicRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	PhysBody* CreateChain(int x, int y, const int* points, int size);
+	PhysBody* CreateChain(int x, int y, const int* points, int size, PhysicEntity* entity_ = NULL);
 	PhysBody* CreatePolygon(int x, int y, const int* points, int size);
 
 	// b2ContactListener ---
