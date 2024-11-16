@@ -338,7 +338,7 @@ private:
 		if (IsKeyPressed(KEY_LEFT) && cooldown <= 0)
 		{
 			timer = timerLenght;
-			cooldown = 40;
+			cooldown = 20;
 		}
 	}
 
@@ -355,7 +355,7 @@ private:
 	float timerLenght = 10;
 	float dt;
 
-	float cooldown = 40;
+	float cooldown = 20;
 };
 class RightFlipper : public PhysicEntity
 {
@@ -418,7 +418,7 @@ private:
 		rFlipperJointDef.lowerAngle = 0 * b2_pi;
 		rFlipperJointDef.upperAngle = 0.15 * b2_pi;
 		rFlipperJointDef.enableLimit = true;
-		rFlipperJointDef.maxMotorTorque = 5000.0f;
+		rFlipperJointDef.maxMotorTorque = 1000.0f;
 		rFlipperJointDef.motorSpeed = 0.0f;
 		rFlipperJointDef.enableMotor = true;
 
@@ -442,7 +442,7 @@ private:
 		if (IsKeyPressed(KEY_RIGHT) && cooldown <= 0)
 		{
 			timer = timerLenght;
-			cooldown = 40;
+			cooldown = 20;
 		}
 	}
 
@@ -459,7 +459,7 @@ private:
 	float timerLenght = 10;
 	float dt;
 
-	float cooldown = 40;
+	float cooldown = 20;
 };
 class Kicker : public PhysicEntity
 {
@@ -608,9 +608,6 @@ public:
 		56, 104,
 		42, 114,
 		0, 90,
-
-
-
 
 
 	};
@@ -776,13 +773,19 @@ class Bumper5 : public PhysicEntity
 public:
 
 	static constexpr int bumper1[14] = {
-			0, 58,
-			0, 68,
-			10, 78,
-			18, 78,
-			70, 26,
-			70, 10,
 			58, 0,
+			70, 10,
+			70, 26,
+			18, 78,
+			10, 78,
+			0, 68,
+			0, 58,
+			
+			
+			
+
+
+
 	};
 
 	PhysBody* GetBody() const { return body; }
