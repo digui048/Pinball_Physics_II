@@ -86,8 +86,8 @@ unsigned int ModuleAudio::LoadFx(const char* path)
 	}
 	else
 	{
-        fx[fx_count++] = sound;
-		ret = fx_count;
+        fx[fx_count] = sound;
+		ret = fx_count++;
 	}
 
 	return ret;
@@ -101,7 +101,7 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 		return false;
 	}
 
-	bool ret = false;
+	bool ret = true;
 
 	if(id < fx_count) PlaySound(fx[id]);
 

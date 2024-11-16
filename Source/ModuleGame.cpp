@@ -957,6 +957,8 @@ bool ModuleGame::CleanUp()
 update_status ModuleGame::Update()
 {
 	
+	SetTargetFPS(60);
+
 	if(IsKeyPressed(KEY_SPACE))
 	{
 		ray_on = !ray_on;
@@ -1031,7 +1033,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
-	printf("BONK! \n");
+	//printf("BONK! \n");
 
 	//switch (bodyB->entity->GetType())
 	//{

@@ -11,7 +11,7 @@ ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app,
 {
 	world = NULL;
 	mouse_joint = NULL;
-	debug = true;
+	debug = false;
 }
 
 // Destructor
@@ -48,12 +48,17 @@ bool ModulePhysics::Start()
 	fixture.shape = &shape;
 	big_ball->CreateFixture(&fixture);*/
 
+
 	return true;
 }
 
 update_status ModulePhysics::PreUpdate()
 {
-	world->Step(1.0f / 60.0f, 6, 2);
+
+	float dt = GetFrameTime();
+	//printf("%f Delta Time: \n", dt);
+
+	world->Step(dt, 6, 2);
 
 	for(b2Contact* c = world->GetContactList(); c; c = c->GetNext())
 	{
