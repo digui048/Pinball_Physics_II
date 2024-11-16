@@ -6,7 +6,7 @@
 #include "ModulePhysics.h"
 #include <iostream>
 
-enum ColliderType {
+enum class ColliderType {
 	NULLCOL,
 	FLIPPER,
 	BUMPER,
@@ -861,7 +861,7 @@ bool ModuleGame::Start()
 	rick = LoadTexture("Assets/rick_head.png");
 
 	//Load Game Textures
-	map = LoadTexture("Assets/exportedSprites/Base.png");
+	map = LoadTexture("Assets/exportedSprites/Base1.png");
 	leftFlipper = LoadTexture("Assets/exportedSprites/FlipperLeft.png");
 	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
 	ball = LoadTexture("Assets/exportedSprites/Ball.png");
@@ -1031,7 +1031,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
-	printf("AAA");
+	printf("BONK! \n");
 
 	//switch (bodyB->entity->GetType())
 	//{
