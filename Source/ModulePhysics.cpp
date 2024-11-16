@@ -72,11 +72,15 @@ update_status ModulePhysics::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
+
 PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 {
+	PhysBody* pbody = new PhysBody();
+
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&body);
 
@@ -88,9 +92,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = radius;
 
 	return pbody;
@@ -121,10 +123,13 @@ PhysBody* ModulePhysics::CreateCircleKinematic(int x, int y, int radius)
 
 PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, float rotation)
 {
+	PhysBody* pbody = new PhysBody();
+
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 	body.angle = rotation * b2_pi;
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&body);
 	b2PolygonShape box;
@@ -136,13 +141,9 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, fl
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
-	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = (int)(width * 0.5f);
 	pbody->height = (int)(height * 0.5f);
-	
-
 
 	return pbody;
 }
@@ -200,9 +201,11 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 
 PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 {
+	PhysBody* pbody = new PhysBody();
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&body);
 
@@ -216,6 +219,39 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 	}
 
 	shape.CreateLoop(p, size / 2);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+
+	b->CreateFixture(&fixture);
+
+	delete p;
+
+
+	pbody->body = b;
+	pbody->width = pbody->height = 0;
+
+	return pbody;
+}
+
+PhysBody* ModulePhysics::CreatePolygon(int x, int y, const int* points, int size)
+{
+	b2BodyDef body;
+	body.type = b2_kinematicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2PolygonShape shape;
+	b2Vec2* p = new b2Vec2[size / 2];
+
+	for (int i = 0; i < size / 2; ++i)
+	{
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+	}
+
+	shape.Set(p, size / 2);
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;

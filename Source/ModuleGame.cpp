@@ -23,7 +23,7 @@ protected:
 		, listener(_listener)
 		, ctype(ctype)
 	{
-
+		body->listener = listener;
 	}
 
 public:
@@ -291,7 +291,7 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y - 12 }, (body->GetRotation() - 0.25) * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y - 30 }, (body->GetRotation() - 0.25) * RAD2DEG, 2.0f, WHITE);
 		Cooldown();
 		Push();
 	}
@@ -605,7 +605,7 @@ public:
 			44, 116,
 			56, 102,
 			56, 82,
-			18, 8,
+			8, 8,
 			14, 0,
 			4, 0,
 			0, 4,
@@ -918,17 +918,26 @@ bool ModuleGame::Start()
 	physicalBumper1 = new Bumper1(App->physics, SCREEN_WIDTH - SCREEN_WIDTH / 3 - 20, SCREEN_HEIGHT - SCREEN_HEIGHT / 3 - 20, this, bumper1, physicMap);
 	entities.emplace_back(physicalBumper1);
 
+	physicalBumper1_1 = new Bumper1(App->physics, SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6 + 20, this, bumper1, physicMap);
+	entities.emplace_back(physicalBumper1_1);
+
 	physicalBumper1mirror = new Bumper1mirror(App->physics, SCREEN_WIDTH / 3 - 20 - 56, SCREEN_HEIGHT - SCREEN_HEIGHT / 3 - 20, this, bumper1Mirrored, physicMap);
 	entities.emplace_back(physicalBumper1mirror);
 
-	physicalBumper2 = new Bumper2(App->physics, SCREEN_WIDTH / 4 - 20, SCREEN_HEIGHT / 3 - 20, this, bumper2, physicMap);
+	physicalBumper2 = new Bumper2(App->physics, SCREEN_WIDTH / 4 - 20, SCREEN_HEIGHT / 3 + 20, this, bumper2, physicMap);
 	entities.emplace_back(physicalBumper2);
 
 	physicalBumper3 = new Bumper3(App->physics, SCREEN_WIDTH - SCREEN_WIDTH/2 + 30, SCREEN_HEIGHT / 3, this, bumper3, physicMap);
 	entities.emplace_back(physicalBumper3);
 
-	physicalBumper4 = new Bumper4(App->physics, SCREEN_WIDTH - SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 3 + 80, this, bumper4, physicMap);
+	physicalBumper4 = new Bumper4(App->physics, SCREEN_WIDTH / 3 + 40, SCREEN_HEIGHT / 3 + 40, this, bumper4, physicMap);
 	entities.emplace_back(physicalBumper4);
+
+	physicalBumper4_1 = new Bumper4(App->physics, SCREEN_WIDTH - SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 6 + 80, this, bumper4, physicMap);
+	entities.emplace_back(physicalBumper4_1);
+
+	physicalBumper5 = new Bumper5(App->physics, SCREEN_WIDTH / 12, SCREEN_HEIGHT / 2 + 4, this, bumper5, physicMap);
+	entities.emplace_back(physicalBumper5);
 
 	return ret;
 }
@@ -1015,13 +1024,13 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleGame::OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB)
+void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
 	App->audio->PlayFx(bonus_fx);
 	printf("AAA");
 
-	switch (bodyB->GetType())
+/*	switch (bodyB->GetType())
 	{
 	case ColliderType::KICKER:
 		LOG("Collision KICKER");
@@ -1047,8 +1056,9 @@ void ModuleGame::OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB)
 		LOG("Collision MAP");
 		break;
 	default:
-		break;
-	}
+		printf("aaa");
+		break; 
+	}*/
 	/*
 	int x, y;
 	if(bodyA)

@@ -35,7 +35,7 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	void OnCollision(PhysicEntity* bodyA, PhysicEntity* bodyB);
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
 
@@ -71,11 +71,13 @@ public:
 	Kicker* physicKicker;
 	Ball* physicBall;
 	Bumper1* physicalBumper1;
+	Bumper1* physicalBumper1_1;
 	Bumper1mirror* physicalBumper1mirror;
 	Bumper2* physicalBumper2;
 	Bumper2mirror* physicalBumper2mirror;
 	Bumper3* physicalBumper3;
 	Bumper4* physicalBumper4;
+	Bumper4* physicalBumper4_1;
 	Bumper5* physicalBumper5;
 	Bumper5mirror* physicalBumper5mirror;
 
