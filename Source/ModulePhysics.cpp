@@ -203,7 +203,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 {
 	PhysBody* pbody = new PhysBody();
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
@@ -236,10 +236,11 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 
 PhysBody* ModulePhysics::CreatePolygon(int x, int y, const int* points, int size)
 {
+	PhysBody* pbody = new PhysBody();
 	b2BodyDef body;
 	body.type = b2_kinematicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 	b2Body* b = world->CreateBody(&body);
 
 	b2PolygonShape shape;
@@ -260,9 +261,8 @@ PhysBody* ModulePhysics::CreatePolygon(int x, int y, const int* points, int size
 
 	delete p;
 
-	PhysBody* pbody = new PhysBody();
+
 	pbody->body = b;
-	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 	pbody->width = pbody->height = 0;
 
 	return pbody;

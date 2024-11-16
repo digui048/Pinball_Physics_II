@@ -153,13 +153,13 @@ public:
 			376, 188,
 			376, 192,
 			382, 206,
-			384, 224,
-			384, 736,
+			386, 224,
+			386, 736,
 			414, 736,
 
 			414, 212,
-			410, 202,
-			408, 188,
+			412, 202,
+			412, 188,
 			406, 178,
 			404, 170,
 			400, 160,
@@ -465,7 +465,7 @@ class Kicker : public PhysicEntity
 {
 public:
 	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 28, 14), _listener, ColliderType::KICKER)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14), _listener, ColliderType::KICKER)
 		, texture(_texture)
 	{
 
@@ -476,7 +476,7 @@ public:
 		b2body = body->body;
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x - 14, (float)y - 7 }, body->GetRotation() * RAD2DEG, 2.0f, WHITE);
 		Cooldown();
 		Push();
 	}
@@ -605,7 +605,7 @@ public:
 			44, 116,
 			56, 102,
 			56, 82,
-			8, 8,
+			18, 8,
 			14, 0,
 			4, 0,
 			0, 4,
@@ -862,7 +862,7 @@ bool ModuleGame::Start()
 	leftFlipper = LoadTexture("Assets/exportedSprites/FlipperLeft.png");
 	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
 	ball = LoadTexture("Assets/exportedSprites/Ball.png");
-	
+	kicker = LoadTexture("Assets/exportedSprites/Kicker.png");
 	//Bumpers
 	bumper1 = LoadTexture("Assets/exportedSprites/Bumper1.png");
 	bumper1Mirrored = LoadTexture("Assets/exportedSprites/Bumper1mirror.png");
@@ -907,7 +907,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(physicRightFlipper);
 
 	//Draw and Create OBJ Kicker
-	physicKicker = new Kicker(App->physics, SCREEN_WIDTH - 48, SCREEN_HEIGHT - 40, this, kicker);
+	physicKicker = new Kicker(App->physics, SCREEN_WIDTH -35 , SCREEN_HEIGHT - 40, this, kicker);
 	entities.emplace_back(physicKicker);
 
 	//Draw and Create OBJ Ball
