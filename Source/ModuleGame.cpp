@@ -536,6 +536,7 @@ public:
 		, texture(_texture)
 	{
 		ChangeGravity(2);
+	
 		
 	}
 
@@ -780,11 +781,6 @@ public:
 			10, 78,
 			0, 68,
 			0, 58,
-			
-			
-			
-
-
 
 	};
 
