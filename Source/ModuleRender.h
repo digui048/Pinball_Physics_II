@@ -2,7 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Fonts.h"
-
+#include "ModuleGame.h"
 #include <limits.h>
 
 class ModuleRender : public Module
@@ -26,4 +26,5 @@ public:
 	Color background;
     Rectangle camera;
 	Fonts* font;
+	int score;
 };

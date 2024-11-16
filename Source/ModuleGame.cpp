@@ -7,7 +7,7 @@
 #include <iostream>
 
 enum class ColliderType {
-	NULLCOL,
+	NULLCOLLIDER,
 	FLIPPER,
 	BUMPER,
 	BALL,
@@ -19,7 +19,7 @@ class PhysicEntity
 {
 protected:
 
-	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype = ColliderType::NULLCOL)
+	PhysicEntity(PhysBody* _body, Module* _listener, ColliderType ctype)
 		: body(_body)
 		, listener(_listener)
 		, ctype(ctype)
@@ -51,28 +51,10 @@ public:
 	}
 	ColliderType GetType() const { return ctype; }
 	
-protected:
+public:
 	PhysBody* body;
 	Module* listener;
 	ColliderType ctype;
-};
-class Score
-{
-private:
-	int score = 0;
-public:
-	void AddScore(int points)
-	{
-		score += points;
-	}
-	void ResetScore()
-	{
-		score = 0;
-	}
-	int GetScore()
-	{
-		return score;
-	}
 };
 class Circle : public PhysicEntity
 {
@@ -218,7 +200,7 @@ public:
 	};
 
 	Map(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150, this), _listener,ColliderType::MAP)
+		: PhysicEntity(physics->CreateChain(_x, _y, rick_head, 150), _listener,ColliderType::MAP)
 		, texture(_texture)
 	{
 
@@ -466,7 +448,7 @@ class Kicker : public PhysicEntity
 {
 public:
 	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14, 0, this), _listener, ColliderType::KICKER)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14), _listener, ColliderType::KICKER)
 		, texture(_texture)
 	{
 
@@ -838,7 +820,7 @@ private:
 
 };
 
-ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled), bumperHitCount(0)
 {
 	ray_on = false;
 	sensed = false;
@@ -850,6 +832,7 @@ ModuleGame::~ModuleGame()
 // Load assets
 bool ModuleGame::Start()
 {
+	bumperHitTimer.StopTime();
 	LOG("Loading Intro assets");
 	bool ret = true;
 
@@ -1004,8 +987,15 @@ update_status ModuleGame::Update()
 	}
 
 	// Game loop ------------------------------------------------------
-
-	if (game_over == true)
+	if (!game_over)
+	{
+		if (death)
+		{
+			physicBall->body->body->SetTransform(b2Vec2(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6), 0);
+			death = false;
+		}
+	}
+	else
 	{
 		DrawText("GAME OVER", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, 40, RED);
 	}
@@ -1035,16 +1025,18 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	App->audio->PlayFx(bonus_fx);
 	//printf("BONK! \n");
 
-	//switch (bodyB->entity->GetType())
+	//switch (bodyB->GetType())
 	//{
 	//case ColliderType::KICKER:
-	//	printf("Collision KICKER");
+	//	LOG("Collision KICKER");
 	//	break;
 	//case ColliderType::FLIPPER:
 	//	LOG("Collision FLIPPER");
 	//	break;
 	//case ColliderType::BUMPER:
 	//	LOG("Collision BUMPER");
+	//	score.AddScore(100);
+	//	OnBumperHit();
 	//	break;
 	//case ColliderType::OUTBOUNDS:
 	//	printf("Collision OUTBOUNDS");
@@ -1055,6 +1047,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//	else
 	//	{
 	//		lostlife--;
+	//		death = true;
 	//	}
 	//	break;
 	//case ColliderType::MAP:
@@ -1077,4 +1070,26 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		bodyB->GetPosition(x, y);
 		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
 	}*/
+}
+
+void ModuleGame::OnBumperHit()
+{
+	if (bumperHitTimer.IsStopped()) {
+		bumperHitTimer.Start();
+		bumperHitCount = 1;
+	}
+	else {
+		if (bumperHitTimer.ReadSec() <= hitTimeLimit) {
+			bumperHitCount++;
+			if (bumperHitCount == 2) {
+				score.AddScore(bonusScore + score.GetScore());
+				bumperHitTimer.StopTime();
+				bumperHitCount = 0;
+			}
+		}
+		else {
+			bumperHitTimer.Start();
+			bumperHitCount = 1;
+		}
+	}
 }
