@@ -990,11 +990,13 @@ update_status ModuleGame::Update()
 	// Game loop ------------------------------------------------------
 	if (!game_over)
 	{
+		score.SaveScore();
 		if (death && !(rounds >= 3))
 		{
-			physicBall->body->body->SetTransform(b2Vec2(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6), 0);
-			death = false;
+			physicBall->body->body->SetTransform({SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6}, 0);
 			rounds++;
+			death = false;
+			score.SavePreviousScore();
 			score.ResetScore();
 		}
 		else if (rounds >= 3)
@@ -1030,7 +1032,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	App->audio->PlayFx(bonus_fx);
 
-	printf("BONK! \n");
+	/*printf("BONK! \n");*/
 
 
 	switch (bodyB->entity->GetType())
@@ -1040,12 +1042,13 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		break;
 	case ColliderType::FLIPPER:
 		LOG("Collision FLIPPER");
-		printf("Flipper");
+		printf("Flipper\n");
 		break;
 	case ColliderType::BUMPER:
 		LOG("Collision BUMPER");
-		score.AddScore(100);
+		printf("Bumper\n");
 		OnBumperHit();
+		score.AddScore(5);
 		break;
 	case ColliderType::OUTBOUNDS:
 		printf("Collision OUTBOUNDS");
@@ -1065,11 +1068,8 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		LOG("Collision MAP");
 		break;
 	default:
-		printf("aaa");
 		break; 
 	}
-
-
 }
 
 	/*
@@ -1097,7 +1097,7 @@ void ModuleGame::OnBumperHit()
 		if (bumperHitTimer.ReadSec() <= hitTimeLimit) {
 			bumperHitCount++;
 			if (bumperHitCount == 2) {
-				score.AddScore(bonusScore + score.GetScore());
+				score.AddScore(bonusScore);
 				bumperHitTimer.StopTime();
 				bumperHitCount = 0;
 			}

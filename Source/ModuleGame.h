@@ -42,24 +42,30 @@ public:
 		score = 0;
 	}
 	// Saves the highest score and it doesn't change until better score is achieved and returns the highest score
-	int SaveScore()
+	void SaveScore()
 	{
 		if (score > highscore)
 		{
 			highscore = score;
 		}
-		return highscore;
 	}
 	// Saves the previous score and returns it
-	int SavePreviousScore()
+	void SavePreviousScore()
 	{
 		previousscore = score;
-		return previousscore;
 	}
 	// Getters
 	int GetScore()
 	{
 		return score;
+	}
+	int GetHighScore()
+	{
+		return highscore;
+	}
+	int GetPreviousScore()
+	{
+		return previousscore;
 	}
 };
 
@@ -78,8 +84,8 @@ public:
 private:
 	TimerBumper bumperHitTimer;
 	int bumperHitCount;
-	const float hitTimeLimit = 2.0f; // Time limit in seconds
-	const int bonusScore = 100; // Bonus score for hitting the bumper twice
+	const float hitTimeLimit = 3.0f; // Time limit in seconds
+	const int bonusScore = 5; // Bonus score for hitting the bumper twice
 
 public:
 

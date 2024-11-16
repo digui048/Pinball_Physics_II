@@ -19,7 +19,7 @@ bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
     font = new Fonts();
-	font->Initialise((char)' ',8,3);
+	font->Initialise((char)' ',8,2);
 	bool ret = true;
 
 	return ret;
@@ -49,8 +49,10 @@ update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
     font->Draw(4, 2, TextFormat("SCORE:%d", App->scene_intro->score.GetScore()));
-	font->Draw(4, 12, TextFormat("HIGHSCORE:%d", App->scene_intro->score.SaveScore()));
-	font->Draw(4, 22, TextFormat("PREVIOUS SCORE:%d", App->scene_intro->score.SavePreviousScore()));
+	font->Draw(4, 12, TextFormat("HIGHSCORE:%d", App->scene_intro->score.GetHighScore()));
+	font->Draw(4, 22, TextFormat("PREVIOUS SCORE:%d", App->scene_intro->score.GetPreviousScore()));
+
+    font->Draw(4, 248, TextFormat("ROUND %d", App->scene_intro->rounds));
     
     DrawFPS(320, 10);
 
