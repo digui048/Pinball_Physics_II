@@ -8,6 +8,7 @@ ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, s
 {
     background = RAYWHITE;
     font = nullptr;
+    score = 0;
 }
 
 // Destructor
@@ -48,7 +49,8 @@ update_status ModuleRender::Update()
 update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
-    font->Draw(4, 2, TextFormat("SCORE: "));
+    font->Draw(4, 2, TextFormat("SCORE:%d", App->scene_intro->score.GetScore()));
+	font->Draw(4, 12, TextFormat("HIGHSCORE:%d", App->scene_intro->score.SaveScore()));
     
     DrawFPS(320, 10);
 
