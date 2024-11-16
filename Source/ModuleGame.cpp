@@ -600,22 +600,25 @@ class Bumper1mirror : public PhysicEntity
 {
 public:
 
-	static constexpr int bumper1chain[18] = {
-			0, 94,
-			44, 116,
-			56, 102,
-			56, 82,
-			18, 8,
-			14, 0,
-			4, 0,
-			0, 4,
-			0, 22,
+	static constexpr int bumper1chain[12] = {
+
+		2, 2,
+		14, 0,
+		56, 84,
+		56, 104,
+		42, 114,
+		0, 90,
+
+
+
+
+
 	};
 
 	PhysBody* GetBody() const { return body; }
 
 	Bumper1mirror(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map)
-		: PhysicEntity(physics->CreateChain(_x, _y, bumper1chain, 18), _listener, ColliderType::BUMPER), texture(_texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, bumper1chain, 12), _listener, ColliderType::BUMPER), texture(_texture)
 	{
 
 	}
