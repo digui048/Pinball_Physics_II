@@ -138,9 +138,12 @@ public:
 	int lostlife = 3;
 	bool game_over;
 	bool death;
+	bool setTrans;
 	int rounds;
 	uint32 bonus_fx;
 
 	vec2<int> ray;
 	bool ray_on;
+
+
 };

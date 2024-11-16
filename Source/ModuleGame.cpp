@@ -530,6 +530,8 @@ public:
 		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
 			Rectangle{ (float)x, (float)y, (float)texture.width * 2.0f, (float)texture.height * 2.0f },
 			Vector2{ (float)texture.width, (float)texture.height }, body->GetRotation() * RAD2DEG, WHITE);
+		printf("posX: %f \n", body->body->GetTransform().p);
+		printf("posY: %f \n", body->body->GetTransform().q);
 	}
 
 	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
@@ -993,7 +995,19 @@ update_status ModuleGame::Update()
 		score.SaveScore();
 		if (death && !(rounds >= 3))
 		{
-			physicBall->body->body->SetTransform({SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6}, 0);
+			
+			/*pos.Set(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6);*/
+			if (setTrans) 
+			{
+				b2Vec2 velocity;
+				velocity.Set(0, 0);
+				physicBall->body->body->SetLinearVelocity(velocity);
+				b2Vec2 pos;
+				pos.Set(8, 14.5f);
+				physicBall->body->body->SetTransform(pos, 0);
+				setTrans = false;
+			}
+			
 			rounds++;
 			death = false;
 			score.SavePreviousScore();
@@ -1030,7 +1044,7 @@ update_status ModuleGame::Update()
 void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
-	App->audio->PlayFx(bonus_fx);
+
 
 	/*printf("BONK! \n");*/
 
@@ -1057,10 +1071,12 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (lostlife <= 0)
 		{
 			game_over = true;
+			
 		}
 		else
 		{
 			lostlife--;
+			setTrans = true;
 			death = true;
 		}
 		break;
@@ -1095,6 +1111,7 @@ void ModuleGame::OnBumperHit()
 	}
 	else {
 		if (bumperHitTimer.ReadSec() <= hitTimeLimit) {
+			App->audio->PlayFx(bonus_fx);
 			bumperHitCount++;
 			if (bumperHitCount == 2) {
 				score.AddScore(bonusScore);
