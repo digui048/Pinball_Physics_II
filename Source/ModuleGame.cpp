@@ -219,8 +219,8 @@ private:
 class OutBounds : public PhysicEntity
 {
 public:
-	OutBounds(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, SCREEN_HEIGHT, 2,0, this), _listener, ColliderType::OUTBOUNDS)
+	OutBounds(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, float width)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, width, 2,0, this), _listener, ColliderType::OUTBOUNDS)
 	{
 		ConvertToStatic();
 	}
@@ -871,17 +871,17 @@ bool ModuleGame::Start()
 	entities.emplace_back(physicMap);
 
 	//Draw and Create OBJ OutBounds
-	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT -36, this, map);
+	physicOutBounds_down = new OutBounds(App->physics, SCREEN_WIDTH / 2, SCREEN_HEIGHT -36, this, map, SCREEN_HEIGHT/3);
 	entities.emplace_back(physicOutBounds_down);
 
-	physicOutBounds_up = new OutBounds(App->physics, SCREEN_WIDTH / 2, 0, this, map);
+	physicOutBounds_up = new OutBounds(App->physics, SCREEN_WIDTH / 2, 0, this, map, SCREEN_HEIGHT/3);
 	entities.emplace_back(physicOutBounds_up);
 
-	physicOutBounds_left = new OutBounds(App->physics, 0, SCREEN_HEIGHT / 2, this, map);
+	physicOutBounds_left = new OutBounds(App->physics, 0, SCREEN_HEIGHT / 2, this, map, SCREEN_HEIGHT);
 	physicOutBounds_left->RotateStatic(90);
 	entities.emplace_back(physicOutBounds_left);
 
-	physicOutBounds_right = new OutBounds(App->physics, SCREEN_WIDTH, SCREEN_HEIGHT / 2, this, map);
+	physicOutBounds_right = new OutBounds(App->physics, SCREEN_WIDTH, SCREEN_HEIGHT / 2, this, map, SCREEN_HEIGHT);
 	physicOutBounds_right->RotateStatic(90);
 	entities.emplace_back(physicOutBounds_right);
 
@@ -1070,7 +1070,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	}
 
 
-	}
+}
 
 	/*
 	int x, y;
