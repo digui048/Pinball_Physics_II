@@ -859,11 +859,11 @@ bool ModuleGame::Start()
 	//Load Game Sounds
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 	bumper_fx = App->audio->LoadFx("Assets/bumper.wav");
-	gameover_fx = App->audio->LoadFx("Assets/gameover.wav"); //añdido a assets
-	flipper_fx = App->audio->LoadFx("Assets/flipper.wav"); //añdido a assets
-	kicker_fx = App->audio->LoadFx("Assets/kicker.wav"); //añdido a assets
-	death_fx = App->audio->LoadFx("Assets/death.wav"); //añdido a assets
-	map_fx = App->audio->LoadFx("Assets/map_collision.wav"); //añdido a assets
+	gameover_fx = App->audio->LoadFx("Assets/gameover.wav");
+	flipper_fx = App->audio->LoadFx("Assets/flipper.wav");
+	kicker_fx = App->audio->LoadFx("Assets/kicker.wav");
+	death_fx = App->audio->LoadFx("Assets/death.wav");
+	map_fx = App->audio->LoadFx("Assets/map_collision.wav"); 
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH /2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
@@ -942,132 +942,130 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-	
-	SetTargetFPS(60);
+    SetTargetFPS(60);
 
-	if(IsKeyPressed(KEY_SPACE))
-	{
-		ray_on = !ray_on;
-		ray.x = GetMouseX();
-		ray.y = GetMouseY();
-	}
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        ray_on = !ray_on;
+        ray.x = GetMouseX();
+        ray.y = GetMouseY();
+    }
 
-	if(IsKeyPressed(KEY_ONE))
-	{
-		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ball));
-		
-	}
+    if (IsKeyPressed(KEY_ONE))
+    {
+        entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ball));
+    }
 
-	if(IsKeyPressed(KEY_TWO))
-	{
-		entities.emplace_back(new Box(App->physics, GetMouseX(), GetMouseY(), this, box));
-	}
+    if (IsKeyPressed(KEY_TWO))
+    {
+        entities.emplace_back(new Box(App->physics, GetMouseX(), GetMouseY(), this, box));
+    }
 
+    // Prepare for raycast ------------------------------------------------------
+    vec2i mouse;
+    mouse.x = GetMouseX();
+    mouse.y = GetMouseY();
+    int ray_hit = ray.DistanceTo(mouse);
 
-	// Prepare for raycast ------------------------------------------------------
-	
-	vec2i mouse;
-	mouse.x = GetMouseX();
-	mouse.y = GetMouseY();
-	int ray_hit = ray.DistanceTo(mouse);
+    vec2f normal(0.0f, 0.0f);
 
-	vec2f normal(0.0f, 0.0f);
+    // All draw functions ------------------------------------------------------
+    // Game entities
+    for (PhysicEntity* entity : entities)
+    {
+        entity->Update();
+        if (ray_on)
+        {
+            int hit = entity->RayHit(ray, mouse, normal);
+            if (hit >= 0)
+            {
+                ray_hit = hit;
+            }
+        }
+    }
 
-	// All draw functions ------------------------------------------------------
+    // Game loop ------------------------------------------------------
+    if (!defgame_over)
+    {
+        if (!game_over)
+        {
+            score.SaveScore();
+            if (death && !(rounds >= 3))
+            {
+                if (setTrans)
+                {
+                    b2Vec2 velocity;
+                    velocity.Set(0, 0);
+                    physicBall->body->body->SetLinearVelocity(velocity);
+                    b2Vec2 pos;
+                    pos.Set(8, 14.5f);
+                    physicBall->body->body->SetTransform(pos, 0);
+                    setTrans = false;
+                }
 
-	// Game entities
-	for (PhysicEntity* entity : entities)
-	{
-		entity->Update();
-		if (ray_on)
-		{
-			int hit = entity->RayHit(ray, mouse, normal);
-			if (hit >= 0)
-			{
-				ray_hit = hit;
-			}
-		}
-	}
-	
-	// Game loop ------------------------------------------------------
-	if(!defgame_over) {
-		if (!game_over)
-		{
-			score.SaveScore();
-			if (death && !(rounds >= 3))
-			{
+                rounds++;
+                death = false;
+            }
+            else if (rounds >= 3)
+            {
+                game_over = true;
+				//añadir sonido - cambio de rounds
+            }
+        }
+        else
+        {
+            game_over = false;
+            score.SavePreviousScore();
+            defrounds++;
+            lostlife = 3;
+            rounds = 0;
+            score.ResetScore();
 
-				/*pos.Set(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6);*/
-				if (setTrans)
-				{
-					b2Vec2 velocity;
-					velocity.Set(0, 0);
-					physicBall->body->body->SetLinearVelocity(velocity);
-					b2Vec2 pos;
-					pos.Set(8, 14.5f);
-					physicBall->body->body->SetTransform(pos, 0);
-					setTrans = false;
-				}
+            if (death && !(rounds >= 3))
+            {
+                if (setTrans)
+                {
+                    b2Vec2 velocity;
+                    velocity.Set(0, 0);
+                    physicBall->body->body->SetLinearVelocity(velocity);
+                    b2Vec2 pos;
+                    pos.Set(8, 14.5f);
+                    physicBall->body->body->SetTransform(pos, 0);
+                    setTrans = false;
+                }
+            }
+            else if (defrounds >= 4)
+            {
+                defgame_over = true;
+                App->audio->PlayFx(gameover_fx); // Play game over sound
+            }
+            if (defrounds == 4)
+            {
+                defrounds = 3;
+            }
+        }
+    }
+    else
+    {
+        DrawTextureEx(gameover, { 0,0 }, 0.0f, 2, WHITE);
+    }
 
-				rounds++;
-				death = false;
-			}
-			else if (rounds >= 3)
-			{
-				game_over = true;
-			}
-		}
-		else {
-			game_over = false;
-			score.SavePreviousScore();
-			defrounds++;
-			lostlife = 3;
-			rounds = 0;
-			score.ResetScore();
-			
-			if (death && !(rounds >= 3)) {
-				if (setTrans)
-				{
-					b2Vec2 velocity;
-					velocity.Set(0, 0);
-					physicBall->body->body->SetLinearVelocity(velocity);
-					b2Vec2 pos;
-					pos.Set(8, 14.5f);
-					physicBall->body->body->SetTransform(pos, 0);
-					setTrans = false;
-				}
-			}
-			else if (defrounds >= 4)
-			{
-				defgame_over = true;
-			}
-			if (defrounds == 4)
-			{
-				defrounds = 3;
-			}
-		}
-	}
-	else
-	{
-		DrawTextureEx(gameover, { 0,0 }, 0.0f, 2, WHITE);
-	}
+    // ray -----------------
+    if (ray_on == true)
+    {
+        vec2f destination((float)(mouse.x - ray.x), (float)(mouse.y - ray.y));
+        destination.Normalize();
+        destination *= (float)ray_hit;
 
-	// ray -----------------
-	if(ray_on == true)
-	{
-		vec2f destination((float)(mouse.x-ray.x), (float)(mouse.y-ray.y));
-		destination.Normalize();
-		destination *= (float)ray_hit;
+        DrawLine(ray.x, ray.y, (int)(ray.x + destination.x), (int)(ray.y + destination.y), RED);
 
-		DrawLine(ray.x, ray.y, (int)(ray.x + destination.x), (int)(ray.y + destination.y), RED);
+        if (normal.x != 0.0f)
+        {
+            DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
+        }
+    }
 
-		if (normal.x != 0.0f)
-		{
-			DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
-		}
-	}
-
-	return UPDATE_CONTINUE;
+    return UPDATE_CONTINUE;
 }
 
 void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
