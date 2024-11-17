@@ -863,7 +863,8 @@ bool ModuleGame::Start()
 	flipper_fx = App->audio->LoadFx("Assets/flipper.wav");
 	kicker_fx = App->audio->LoadFx("Assets/kicker.wav");
 	death_fx = App->audio->LoadFx("Assets/death.wav");
-	map_fx = App->audio->LoadFx("Assets/map_collision.wav"); 
+	map_fx = App->audio->LoadFx("Assets/map_collision.wav");
+	round_fx = App->audio->LoadFx("Assets/round.wav");
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH /2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
@@ -1009,7 +1010,7 @@ update_status ModuleGame::Update()
             else if (rounds >= 3)
             {
                 game_over = true;
-				//añadir sonido - cambio de rounds
+				App->audio->PlayFx(round_fx); // Play change-of-round sound
             }
         }
         else

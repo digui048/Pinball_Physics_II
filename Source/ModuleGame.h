@@ -153,6 +153,7 @@ public:
 	uint32 death_fx;
 	uint32 gameover_fx;
 	uint32 map_fx;
+	uint32 round_fx;
 
 	vec2<int> ray;
 	bool ray_on;
