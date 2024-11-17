@@ -519,11 +519,29 @@ public:
 
 	void Update() override
 	{
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-			Rectangle{ (float)x, (float)y, (float)texture.width * 2.0f, (float)texture.height * 2.0f },
-			Vector2{ (float)texture.width, (float)texture.height }, body->GetRotation() * RAD2DEG, WHITE);
+		dt = GetFrameTime() * GetFPS();
+
+		mechanicTimer += dt;
+		invTimer += dt;
+
+		if (mechanicTimer % 100 == 0) 
+		{
+			blindnessMode = !blindnessMode;
+		}
+
+
+		if (invTimer % 7 == 0 || !blindnessMode) 
+		{
+			int x, y;
+			body->GetPhysicPosition(x, y);
+			DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
+				Rectangle{ (float)x, (float)y, (float)texture.width * 2.0f, (float)texture.height * 2.0f },
+				Vector2{ (float)texture.width, (float)texture.height }, body->GetRotation() * RAD2DEG, WHITE);
+		}
+		
+
+
+
 	}
 
 	void ChangeGravity(float gravity)
@@ -567,6 +585,8 @@ public:
 
 private:
 	Texture2D texture;
+
+	float dt;
 	float originalGravity;
 	float modifiedGravity;
 	bool isGravityModified;
@@ -574,6 +594,10 @@ private:
 	float originalRestitution;
 	float modifiedRestitution;
 	bool isRestitutionModified;
+
+	int invTimer;
+	int mechanicTimer;
+	bool blindnessMode; 
 };
 class Bumper1 : public PhysicEntity
 {

@@ -106,7 +106,7 @@ public:
 	//Flipper textures
 	Texture2D rightFlipper, leftFlipper;
 	//Bumpers Textures
-	Texture2D bumper1, bumper1Mirrored, bumper2, bumper2Mirrored, bumper3, bumper4, bumper5, bumper5Mirrored;
+	Texture2D bumper1, bumper1Mirrored, bumper2, bumper2Mirrored, bumper3, bumper4, bumper5, bumper5Mirrored, empty;
 	//Ball & kicker textures
 	Texture2D ball, kicker;
 	//Game over texture
