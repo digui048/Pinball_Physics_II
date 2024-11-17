@@ -510,11 +510,9 @@ class Ball : public PhysicEntity
 public:
 	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateCircle(_x, _y, 14, this), _listener, ColliderType::BALL)
-		, texture(_texture)
+		, texture(_texture), originalGravity(2.0f), modifiedGravity(0.7f), isGravityModified(false)
 	{
-		ChangeGravity(2);
-	
-		
+		ChangeGravity(originalGravity);
 	}
 
 	void Update() override
@@ -524,21 +522,31 @@ public:
 		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
 			Rectangle{ (float)x, (float)y, (float)texture.width * 2.0f, (float)texture.height * 2.0f },
 			Vector2{ (float)texture.width, (float)texture.height }, body->GetRotation() * RAD2DEG, WHITE);
-		//printf("posX: %f \n", body->body->GetTransform().p);
-		//printf("posY: %f \n", body->body->GetTransform().q);
 	}
 
-	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
+	void ChangeGravity(float gravity)
 	{
-		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
+		body->body->SetGravityScale(gravity);
+	}
+
+	void ToggleGravity()
+	{
+		if (isGravityModified)
+		{
+			ChangeGravity(originalGravity);
+		}
+		else
+		{
+			ChangeGravity(modifiedGravity);
+		}
+		isGravityModified = !isGravityModified;
 	}
 
 private:
 	Texture2D texture;
-	void ChangeGravity(float gravity) 
-	{
-		body->body->SetGravityScale(gravity);
-	}
+	float originalGravity;
+	float modifiedGravity;
+	bool isGravityModified;
 };
 class Bumper1 : public PhysicEntity
 {
@@ -943,130 +951,136 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-    SetTargetFPS(60);
+	SetTargetFPS(60);
 
-    if (IsKeyPressed(KEY_SPACE))
-    {
-        ray_on = !ray_on;
-        ray.x = GetMouseX();
-        ray.y = GetMouseY();
-    }
+	if (IsKeyPressed(KEY_SPACE))
+	{
+		ray_on = !ray_on;
+		ray.x = GetMouseX();
+		ray.y = GetMouseY();
+	}
 
-    if (IsKeyPressed(KEY_ONE))
-    {
-        entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ball));
-    }
+	if (IsKeyPressed(KEY_ONE))
+	{
+		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ball));
+	}
 
-    if (IsKeyPressed(KEY_TWO))
-    {
-        entities.emplace_back(new Box(App->physics, GetMouseX(), GetMouseY(), this, box));
-    }
+	if (IsKeyPressed(KEY_TWO))
+	{
+		entities.emplace_back(new Box(App->physics, GetMouseX(), GetMouseY(), this, box));
+	}
 
-    // Prepare for raycast ------------------------------------------------------
-    vec2i mouse;
-    mouse.x = GetMouseX();
-    mouse.y = GetMouseY();
-    int ray_hit = ray.DistanceTo(mouse);
+	// Toggle gravity when 'G' is pressed
+	if (IsKeyPressed(KEY_G))
+	{
+		physicBall->ToggleGravity();
+	}
 
-    vec2f normal(0.0f, 0.0f);
+	// Prepare for raycast ------------------------------------------------------
+	vec2i mouse;
+	mouse.x = GetMouseX();
+	mouse.y = GetMouseY();
+	int ray_hit = ray.DistanceTo(mouse);
 
-    // All draw functions ------------------------------------------------------
-    // Game entities
-    for (PhysicEntity* entity : entities)
-    {
-        entity->Update();
-        if (ray_on)
-        {
-            int hit = entity->RayHit(ray, mouse, normal);
-            if (hit >= 0)
-            {
-                ray_hit = hit;
-            }
-        }
-    }
+	vec2f normal(0.0f, 0.0f);
 
-    // Game loop ------------------------------------------------------
-    if (!defgame_over)
-    {
-        if (!game_over)
-        {
-            score.SaveScore();
-            if (death && !(rounds >= 3))
-            {
-                if (setTrans)
-                {
-                    b2Vec2 velocity;
-                    velocity.Set(0, 0);
-                    physicBall->body->body->SetLinearVelocity(velocity);
-                    b2Vec2 pos;
-                    pos.Set(8, 14.5f);
-                    physicBall->body->body->SetTransform(pos, 0);
-                    setTrans = false;
-                }
+	// All draw functions ------------------------------------------------------
+	// Game entities
+	for (PhysicEntity* entity : entities)
+	{
+		entity->Update();
+		if (ray_on)
+		{
+			int hit = entity->RayHit(ray, mouse, normal);
+			if (hit >= 0)
+			{
+				ray_hit = hit;
+			}
+		}
+	}
 
-                rounds++;
-                death = false;
-            }
-            else if (rounds >= 3)
-            {
-                game_over = true;
+	// Game loop ------------------------------------------------------
+	if (!defgame_over)
+	{
+		if (!game_over)
+		{
+			score.SaveScore();
+			if (death && !(rounds >= 3))
+			{
+				if (setTrans)
+				{
+					b2Vec2 velocity;
+					velocity.Set(0, 0);
+					physicBall->body->body->SetLinearVelocity(velocity);
+					b2Vec2 pos;
+					pos.Set(8, 14.5f);
+					physicBall->body->body->SetTransform(pos, 0);
+					setTrans = false;
+				}
+
+				rounds++;
+				death = false;
+			}
+			else if (rounds >= 3)
+			{
+				game_over = true;
 				App->audio->PlayFx(round_fx); // Play change-of-round sound
-            }
-        }
-        else
-        {
-            game_over = false;
-            score.SavePreviousScore();
-            defrounds++;
-            lostlife = 3;
-            rounds = 0;
-            score.ResetScore();
+			}
+		}
+		else
+		{
+			game_over = false;
+			score.SavePreviousScore();
+			defrounds++;
+			lostlife = 3;
+			rounds = 0;
+			score.ResetScore();
 
-            if (death && !(rounds >= 3))
-            {
-                if (setTrans)
-                {
-                    b2Vec2 velocity;
-                    velocity.Set(0, 0);
-                    physicBall->body->body->SetLinearVelocity(velocity);
-                    b2Vec2 pos;
-                    pos.Set(8, 14.5f);
-                    physicBall->body->body->SetTransform(pos, 0);
-                    setTrans = false;
-                }
-            }
-            else if (defrounds >= 4)
-            {
-                defgame_over = true;
-                App->audio->PlayFx(gameover_fx); // Play game over sound
-            }
-            if (defrounds == 4)
-            {
-                defrounds = 3;
-            }
-        }
-    }
-    else
-    {
-        DrawTextureEx(gameover, { 0,0 }, 0.0f, 2, WHITE);
-    }
+			if (death && !(rounds >= 3))
+			{
+				if (setTrans)
+				{
+					b2Vec2 velocity;
+					velocity.Set(0, 0);
+					physicBall->body->body->SetLinearVelocity(velocity);
+					b2Vec2 pos;
+					pos.Set(8, 14.5f);
+					physicBall->body->body->SetTransform(pos, 0);
+					setTrans = false;
+				}
+			}
+			else if (defrounds >= 4)
+			{
+				defgame_over = true;
+				App->audio->PlayFx(gameover_fx); // Play game over sound
+			}
+			if (defrounds == 4)
+			{
+				defrounds = 3;
+			}
+		}
+	}
+	else
+	{
+		DrawTextureEx(gameover, { 0,0 }, 0.0f, 2, WHITE);
+	}
 
-    // ray -----------------
-    if (ray_on == true)
-    {
-        vec2f destination((float)(mouse.x - ray.x), (float)(mouse.y - ray.y));
-        destination.Normalize();
-        destination *= (float)ray_hit;
+	// ray -----------------
+	if (ray_on == true)
+	{
+		vec2f destination((float)(mouse.x - ray.x), (float)(mouse.y - ray.y));
+		destination.Normalize();
+		destination *= (float)ray_hit;
 
-        DrawLine(ray.x, ray.y, (int)(ray.x + destination.x), (int)(ray.y + destination.y), RED);
+		DrawLine(ray.x, ray.y, (int)(ray.x + destination.x), (int)(ray.y + destination.y), RED);
 
-        if (normal.x != 0.0f)
-        {
-            DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
-        }
-    }
+		if (normal.x != 0.0f)
+		{
+			DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
+		}
+	}
 
-    return UPDATE_CONTINUE;
+	return UPDATE_CONTINUE;
 }
 
 void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
