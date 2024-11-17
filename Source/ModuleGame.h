@@ -137,9 +137,11 @@ public:
 
 	//Game variables
 	int lostlife = 3;
-	bool game_over;
-	bool death;
-	bool setTrans;
+	bool defgame_over = false;
+	int defrounds = 1;
+	bool game_over = false;
+	bool death = false;
+	bool setTrans = false;
 	int rounds;
 
 	float cooldown_;

@@ -52,7 +52,7 @@ update_status ModuleRender::PostUpdate()
 	font->Draw(4, 12, TextFormat("HIGHSCORE:%d", App->scene_intro->score.GetHighScore()));
 	font->Draw(4, 22, TextFormat("PREVIOUS SCORE:%d", App->scene_intro->score.GetPreviousScore()));
 
-    font->Draw(4, 248, TextFormat("ROUND %d", App->scene_intro->rounds));
+    font->Draw(4, 248, TextFormat("ROUND %d", App->scene_intro->defrounds));
     
     DrawFPS(320, 10);
 

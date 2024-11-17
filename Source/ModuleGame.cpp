@@ -990,32 +990,61 @@ update_status ModuleGame::Update()
 	}
 	
 	// Game loop ------------------------------------------------------
-	if (!game_over)
-	{
-		score.SaveScore();
-		if (death && !(rounds >= 3))
+	if(!defgame_over) {
+		if (!game_over)
 		{
-			
-			/*pos.Set(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6);*/
-			if (setTrans) 
+			score.SaveScore();
+			if (death && !(rounds >= 3))
 			{
-				b2Vec2 velocity;
-				velocity.Set(0, 0);
-				physicBall->body->body->SetLinearVelocity(velocity);
-				b2Vec2 pos;
-				pos.Set(8, 14.5f);
-				physicBall->body->body->SetTransform(pos, 0);
-				setTrans = false;
+
+				/*pos.Set(SCREEN_WIDTH - 48, SCREEN_HEIGHT - SCREEN_HEIGHT / 6);*/
+				if (setTrans)
+				{
+					b2Vec2 velocity;
+					velocity.Set(0, 0);
+					physicBall->body->body->SetLinearVelocity(velocity);
+					b2Vec2 pos;
+					pos.Set(8, 14.5f);
+					physicBall->body->body->SetTransform(pos, 0);
+					setTrans = false;
+				}
+
+				rounds++;
+				death = false;
 			}
-			
-			rounds++;
-			death = false;
-			score.SavePreviousScore();
-			score.ResetScore();
+			else if (rounds >= 3)
+			{
+				game_over = true;
+			}
 		}
-		else if (rounds >= 4)
-		{
-			game_over = true;
+		else {
+			game_over = false;
+			score.SavePreviousScore();
+			defrounds++;
+			lostlife = 3;
+			rounds = 0;
+			score.ResetScore();
+			
+			if (death && !(rounds >= 3)) {
+				if (setTrans)
+				{
+					b2Vec2 velocity;
+					velocity.Set(0, 0);
+					physicBall->body->body->SetLinearVelocity(velocity);
+					b2Vec2 pos;
+					pos.Set(8, 14.5f);
+					physicBall->body->body->SetTransform(pos, 0);
+					setTrans = false;
+				}
+			}
+			else if (defrounds >= 4)
+			{
+				defgame_over = true;
+			}
+			if (defrounds == 4)
+			{
+				defrounds = 3;
+			}
 		}
 	}
 	else
@@ -1061,24 +1090,25 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	case ColliderType::BUMPER:
 		LOG("Collision BUMPER");
 		printf("Bumper\n");
-		Cooldown();
 		OnBumperHit();
 		score.AddScore(5);
 		break;
 	case ColliderType::OUTBOUNDS:
 		printf("Collision OUTBOUNDS");
 		death = true;
-
 		if (lostlife <= 0)
 		{
 			game_over = true;
-			
 		}
 		else
 		{
 			lostlife--;
 			setTrans = true;
 			death = true;
+		}
+		if (defrounds >= 4)
+		{
+			defgame_over = true;
 		}
 		break;
 	case ColliderType::MAP:
