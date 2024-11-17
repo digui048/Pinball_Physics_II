@@ -259,7 +259,7 @@ public:
 	b2RevoluteJointDef GetJoint() const { return lFlipperJointDef; }
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map, Application* app)
-		: PhysicEntity(physics->CreateRectangle(_x + 50, _y + 20, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture), app(app)
+		: PhysicEntity(physics->CreateRectangle(_x + 50, _y + 14, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture), app(app)
 	{
 		InitializeJoint(map->GetBody()->body);
 	}
@@ -358,7 +358,7 @@ public:
 	b2RevoluteJointDef GetJoint() const { return rFlipperJointDef; }
 
 	RightFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map, Application* app)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture), app(app)
+		: PhysicEntity(physics->CreateRectangle(_x, _y + 10, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture), app(app)
 	{
 		InitializeJoint(map->GetBody()->body);
 	}
