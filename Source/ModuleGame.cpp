@@ -437,9 +437,9 @@ private:
 class Kicker : public PhysicEntity
 {
 public:
-	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+	Kicker(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Application* app)
 		: PhysicEntity(physics->CreateRectangle(_x, _y, 24, 14, 0, this), _listener, ColliderType::KICKER)
-		, texture(_texture)
+		, texture(_texture), app(app)
 	{
 
 	}
@@ -462,6 +462,8 @@ public:
 private:
 	Texture2D texture;
 	b2Body* b2body;
+	Application* app; // Store the App pointer
+
 	void Push()
 	{
 		dt = GetFrameTime() * GetFPS();
@@ -481,16 +483,12 @@ private:
 			b2body->SetLinearVelocity(velocity);
 		}
 		if (IsKeyPressed(KEY_DOWN) && cooldown <= 0)
-		{	
+		{
 			timer = timerLenght;
 			cooldown = 40;
+			app->audio->PlayFx(app->scene_intro->kicker_fx); // Play kicker sound
 		}
 	}
-	float timer = 0;
-	float timerLenght = 10;
-	float dt;
-
-	float cooldown = 40;
 
 	void Cooldown()
 	{
@@ -500,6 +498,12 @@ private:
 			cooldown -= dt;
 		}
 	}
+
+	float timer = 0;
+	float timerLenght = 10;
+	float dt;
+
+	float cooldown = 40;
 };
 class Ball : public PhysicEntity
 {
@@ -891,8 +895,8 @@ bool ModuleGame::Start()
 	physicRightFlipper = new RightFlipper(App->physics, SCREEN_WIDTH / 2 + 32 , SCREEN_HEIGHT - SCREEN_HEIGHT / 6 +22, this, rightFlipper, physicMap, App);
 	entities.emplace_back(physicRightFlipper);
 
-	//Draw and Create OBJ Kicker
-	physicKicker = new Kicker(App->physics, SCREEN_WIDTH -35 , SCREEN_HEIGHT - 40, this, kicker);
+	// Draw and Create OBJ Kicker
+	physicKicker = new Kicker(App->physics, SCREEN_WIDTH - 35, SCREEN_HEIGHT - 40, this, kicker, App);
 	entities.emplace_back(physicKicker);
 
 	//Draw and Create OBJ Ball
