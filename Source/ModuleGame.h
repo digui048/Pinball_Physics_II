@@ -82,6 +82,7 @@ public:
 	void OnBumperHit();
 
 private:
+	void Cooldown();
 	TimerBumper bumperHitTimer;
 	int bumperHitCount;
 	const float hitTimeLimit = 3.0f; // Time limit in seconds
@@ -140,6 +141,9 @@ public:
 	bool death;
 	bool setTrans;
 	int rounds;
+
+	float cooldown_;
+
 	uint32 bonus_fx;
 
 	vec2<int> ray;

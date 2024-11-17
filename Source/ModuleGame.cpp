@@ -530,8 +530,8 @@ public:
 		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
 			Rectangle{ (float)x, (float)y, (float)texture.width * 2.0f, (float)texture.height * 2.0f },
 			Vector2{ (float)texture.width, (float)texture.height }, body->GetRotation() * RAD2DEG, WHITE);
-		printf("posX: %f \n", body->body->GetTransform().p);
-		printf("posY: %f \n", body->body->GetTransform().q);
+		//printf("posX: %f \n", body->body->GetTransform().p);
+		//printf("posY: %f \n", body->body->GetTransform().q);
 	}
 
 	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
@@ -1013,7 +1013,7 @@ update_status ModuleGame::Update()
 			score.SavePreviousScore();
 			score.ResetScore();
 		}
-		else if (rounds >= 3)
+		else if (rounds >= 4)
 		{
 			game_over = true;
 		}
@@ -1061,6 +1061,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	case ColliderType::BUMPER:
 		LOG("Collision BUMPER");
 		printf("Bumper\n");
+		Cooldown();
 		OnBumperHit();
 		score.AddScore(5);
 		break;
@@ -1111,9 +1112,9 @@ void ModuleGame::OnBumperHit()
 	}
 	else {
 		if (bumperHitTimer.ReadSec() <= hitTimeLimit) {
-			App->audio->PlayFx(bonus_fx);
 			bumperHitCount++;
-			if (bumperHitCount == 2) {
+			if (bumperHitCount == 3) {
+				App->audio->PlayFx(bonus_fx);
 				score.AddScore(bonusScore);
 				bumperHitTimer.StopTime();
 				bumperHitCount = 0;
@@ -1124,4 +1125,16 @@ void ModuleGame::OnBumperHit()
 			bumperHitCount = 1;
 		}
 	}
+}
+
+void ModuleGame::Cooldown()
+{
+	float dt;
+	float cooldown = 40;
+	dt = GetFrameTime() * GetFPS();
+	if (cooldown > 0)
+	{
+		cooldown -= dt;
+	}
+
 }
