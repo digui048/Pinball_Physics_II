@@ -1087,6 +1087,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		printf("Flipper\n");
 		break;
 	case ColliderType::BUMPER:
+		App->audio->PlayFx(bumper_fx);
 		LOG("Collision BUMPER");
 		printf("Bumper\n");
 		OnBumperHit();
