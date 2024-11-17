@@ -511,8 +511,10 @@ public:
 	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateCircle(_x, _y, 14, this), _listener, ColliderType::BALL)
 		, texture(_texture), originalGravity(2.0f), modifiedGravity(0.7f), isGravityModified(false)
+		, originalRestitution(0.3f), modifiedRestitution(0.85f), isRestitutionModified(false)
 	{
 		ChangeGravity(originalGravity);
+		ChangeRestitution(originalRestitution);
 	}
 
 	void Update() override
@@ -542,11 +544,36 @@ public:
 		isGravityModified = !isGravityModified;
 	}
 
+	void ChangeRestitution(float restitution)
+	{
+		for (b2Fixture* f = body->body->GetFixtureList(); f; f = f->GetNext())
+		{
+			f->SetRestitution(restitution);
+		}
+	}
+
+	void ToggleRestitution()
+	{
+		if (isRestitutionModified)
+		{
+			ChangeRestitution(originalRestitution);
+		}
+		else
+		{
+			ChangeRestitution(modifiedRestitution);
+		}
+		isRestitutionModified = !isRestitutionModified;
+	}
+
 private:
 	Texture2D texture;
 	float originalGravity;
 	float modifiedGravity;
 	bool isGravityModified;
+
+	float originalRestitution;
+	float modifiedRestitution;
+	bool isRestitutionModified;
 };
 class Bumper1 : public PhysicEntity
 {
@@ -974,6 +1001,12 @@ update_status ModuleGame::Update()
 	if (IsKeyPressed(KEY_G))
 	{
 		physicBall->ToggleGravity();
+	}
+
+	// Toggle restitution when 'B' is pressed
+	if (IsKeyPressed(KEY_B))
+	{
+		physicBall->ToggleRestitution();
 	}
 
 	// Prepare for raycast ------------------------------------------------------
