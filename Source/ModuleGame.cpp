@@ -864,6 +864,12 @@ bool ModuleGame::Start()
 
 	//Load Game Sounds
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
+	bumper_fx = App->audio->LoadFx("Assets/bumper.wav");
+	gameover_fx = App->audio->LoadFx("Assets/gameover.wav");
+	flipper_fx = App->audio->LoadFx("Assets/flipper.wav");
+	kicker_fx = App->audio->LoadFx("Assets/kicker.wav");
+	death_fx = App->audio->LoadFx("Assets/death.wav");
+	map_fx = App->audio->LoadFx("Assets/map.wav");
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH /2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 

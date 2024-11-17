@@ -147,6 +147,12 @@ public:
 	float cooldown_;
 
 	uint32 bonus_fx;
+	uint32 bumper_fx;
+	uint32 flipper_fx;
+	uint32 kicker_fx;
+	uint32 death_fx;
+	uint32 gameover_fx;
+	uint32 map_fx;
 
 	vec2<int> ray;
 	bool ray_on;
