@@ -1,6 +1,6 @@
 # Pinball Physics II
 
-This project is a continuation of the original Pinball game project. Below you will find details about the original game, the contributors, controls, and the original mechanics of this version.
+This project is an original Pinball game project. Below you will find details about the game, the contributors, controls, and the original mechanics of this version.
 
 ## Original Game
 It is an original game, so there is not any link, here is a link to our repository: [GitHub Repository](https://github.com/digui048/Pinball_Physics_II)
