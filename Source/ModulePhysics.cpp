@@ -293,6 +293,10 @@ update_status ModulePhysics::PostUpdate()
 		return UPDATE_CONTINUE;
 	}
 
+	b2Body* mouseSelect = nullptr;
+	Vector2 mousePosition = GetMousePosition();
+	b2Vec2 pMousePosition = b2Vec2(PIXEL_TO_METERS(mousePosition.x), PIXEL_TO_METERS(mousePosition.y));
+
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -367,6 +371,12 @@ update_status ModulePhysics::PostUpdate()
 			// TODO 1: If mouse button 1 is pressed ...
 			// App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN
 			// test if the current body contains mouse position
+			if (mouse_joint == nullptr && mouseSelect == nullptr && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+
+				if (f->TestPoint(pMousePosition)) {
+					mouseSelect = b;
+				}
+			}
 		}
 	}
 
@@ -374,12 +384,35 @@ update_status ModulePhysics::PostUpdate()
 	// so we can pull it around
 	// TODO 2: If a body was selected, create a mouse joint
 	// using mouse_joint class property
+	if (mouseSelect) {
+		b2MouseJointDef def;
 
+		def.bodyA = ground;
+		def.bodyB = mouseSelect;
+		def.target = pMousePosition;
+		def.damping = 0.5f;
+		def.stiffness = 20.f;
+		def.maxForce = 100.f * mouseSelect->GetMass();
+
+		mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
+	}
 
 	// TODO 3: If the player keeps pressing the mouse button, update
 	// target position and draw a red line between both anchor points
+	else if (mouse_joint && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+		mouse_joint->SetTarget(pMousePosition);
+		b2Vec2 anchorPosition = mouse_joint->GetBodyB()->GetPosition();
+		anchorPosition.x = METERS_TO_PIXELS(anchorPosition.x);
+		anchorPosition.y = METERS_TO_PIXELS(anchorPosition.y);
+
+		DrawLine(anchorPosition.x, anchorPosition.y, mousePosition.x, mousePosition.y, RED);
+	}
 
 	// TODO 4: If the player releases the mouse button, destroy the joint
+	else if (mouse_joint && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+		world->DestroyJoint(mouse_joint);
+		mouse_joint = nullptr;
+	}
 
 	return UPDATE_CONTINUE;
 }
