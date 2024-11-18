@@ -259,7 +259,7 @@ public:
 	b2RevoluteJointDef GetJoint() const { return lFlipperJointDef; }
 
 	LeftFlipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, Map* map, Application* app)
-		: PhysicEntity(physics->CreateRectangle(_x + 50, _y + 14, 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture), app(app)
+		: PhysicEntity(physics->CreateRectangle(_x, _y , 80, 20, 0, this), _listener, ColliderType::FLIPPER), texture(_texture), app(app)
 	{
 		InitializeJoint(map->GetBody()->body);
 	}
@@ -268,7 +268,7 @@ public:
 	{
 		int x, y;
 		body->GetPhysicPosition(x, y);
-		DrawTextureEx(texture, Vector2{ (float)x - 50, (float)y - 30 }, (body->GetRotation() - 0.25) * RAD2DEG, 2.0f, WHITE);
+		DrawTextureEx(texture, Vector2{ (float)x, (float)y}, (body->GetRotation()) * RAD2DEG, 2.0f, WHITE);
 		Cooldown();
 		Push();
 	}
@@ -289,7 +289,7 @@ private:
 		b2Vec2 worldAnchor = lFlipperBody->GetWorldPoint(localAnchor);
 		lFlipperJointDef.Initialize(lFlipperBody, mapBody, worldAnchor);
 
-		lFlipperJointDef.lowerAngle = -0.15 * b2_pi;
+		lFlipperJointDef.lowerAngle = -0 * b2_pi; //-0.15
 		lFlipperJointDef.upperAngle = 0 * b2_pi;
 		lFlipperJointDef.enableLimit = true;
 		lFlipperJointDef.maxMotorTorque = 1000.0f;
@@ -901,6 +901,7 @@ bool ModuleGame::Start()
 	//Load Game Textures
 	map = LoadTexture("Assets/exportedSprites/Base1.png");
 	leftFlipper = LoadTexture("Assets/exportedSprites/FlipperLeft.png");
+	leftFlipperStraight = LoadTexture("Assets/exportedSprites/FlipperLeftStraight.png");
 	rightFlipper = LoadTexture("Assets/exportedSprites/FlipperRight.png");
 	ball = LoadTexture("Assets/exportedSprites/Ball.png");
 	kicker = LoadTexture("Assets/exportedSprites/Kicker.png");
@@ -948,7 +949,9 @@ bool ModuleGame::Start()
 	entities.emplace_back(physicOutBounds_right);
 
 	//Draw and Create OBJ LeftFlipper
-	physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap, App);
+	//physicLeftFlipper = new LeftFlipper(App->physics,SCREEN_WIDTH / 4.5f - 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 6, this, leftFlipper, physicMap, App);
+	physicLeftFlipper = new LeftFlipper(App->physics, SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT /2, this, leftFlipperStraight, physicMap, App);
+	entities.emplace_back(physicLeftFlipper);
 	entities.emplace_back(physicLeftFlipper);
 
 	//Draw and Create OBJ RightFlipper

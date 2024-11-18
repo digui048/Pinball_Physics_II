@@ -104,7 +104,7 @@ public:
 	//Map texture
 	Texture2D map;
 	//Flipper textures
-	Texture2D rightFlipper, leftFlipper;
+	Texture2D rightFlipper, leftFlipper, leftFlipperStraight;
 	//Bumpers Textures
 	Texture2D bumper1, bumper1Mirrored, bumper2, bumper2Mirrored, bumper3, bumper4, bumper5, bumper5Mirrored, empty;
 	//Ball & kicker textures
