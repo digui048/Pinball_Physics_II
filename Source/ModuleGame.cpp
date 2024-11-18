@@ -509,7 +509,7 @@ class Ball : public PhysicEntity
 {
 public:
 	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 14, this), _listener, ColliderType::BALL)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 12, this), _listener, ColliderType::BALL)
 		, texture(_texture), originalGravity(2.0f), modifiedGravity(0.7f), isGravityModified(false)
 		, originalRestitution(0.3f), modifiedRestitution(0.85f), isRestitutionModified(false)
 	{
@@ -1143,30 +1143,19 @@ update_status ModuleGame::Update()
 void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
-
-
-	/*printf("BONK! \n");*/
-
-
 	switch (bodyB->entity->GetType())
 	{
 	case ColliderType::KICKER:
-		LOG("Collision KICKER");
 		break;
 	case ColliderType::FLIPPER:
-		LOG("Collision FLIPPER");
-		printf("Flipper\n");
 		break;
 	case ColliderType::BUMPER:
 		App->audio->PlayFx(bumper_fx);
-		LOG("Collision BUMPER");
-		printf("Bumper\n");
 		OnBumperHit();
 		score.AddScore(5);
 		break;
 	case ColliderType::OUTBOUNDS:
 		App->audio->PlayFx(death_fx);
-		printf("Collision OUTBOUNDS");
 		death = true;
 		if (lostlife <= 0)
 		{
@@ -1184,7 +1173,6 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		}
 		break;
 	case ColliderType::MAP:
-		LOG("Collision MAP");
 		App->audio->PlayFx(map_fx);
 		break;
 	default:
